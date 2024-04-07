@@ -1,4 +1,4 @@
- 
+import sys 
 import os
 import shutil
 import folder_paths
@@ -18,20 +18,24 @@ class SixGodPrompts:
     
     @classmethod
     def INPUT_TYPES(s):  
-        return {"required": {"text": ("STRING", {"multiline": True}), "clip": ("CLIP", )}}
+        return {"required": {
+            "text": ("STRING", {"multiline": True}),
+            "clip": ("CLIP",),
+            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize})
+        }}
     
-    RETURN_TYPES = ("CONDITIONING",)
+    RETURN_TYPES = ("CONDITIONING","INT")
     FUNCTION = "encode"
     CATEGORY = "conditioning"
     
 
-    def encode(self, clip, text):
-        # text=extract_tags(text)
+    def encode(self, clip, text,seed):
+        text=extract_tags(text)
         if(contains_chinese(text)==True):
            text=get(text)
         tokens = clip.tokenize(text)
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
-        return ([[cond, {"pooled_output": pooled}]], )
+        return ([[cond, {"pooled_output": pooled}]]), seed
 
    
 

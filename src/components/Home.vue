@@ -3,7 +3,7 @@
   <div class="home" v-if="promptObj" ref="Refhome">
     <slot></slot>
     <Favorites></Favorites>
-    <!-- <RandPrompt></RandPrompt> -->
+    <RandPrompt></RandPrompt>
     <div class="prompt-container">
       <p>{{ props.pagetit }}</p>
       <div>
@@ -15,7 +15,7 @@
       <div class="prompt-tools">
          <button @click="deleteAllPrompt(true)">清空正向提示词</button>
           <button @click="deleteAllPrompt(false)">清空反向提示词</button>
-          <!-- <button @click="toggleRandomOpen">自定义随机词库</button> -->
+          <button @click="toggleRandomOpen">自定义随机词库</button>
           <button @click="toggleFaviriteOpen">收藏夹</button>
       </div>
 
