@@ -29,3 +29,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+/yours/* 
+!/yours/自定义词库放当前目录.txt
