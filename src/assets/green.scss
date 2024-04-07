@@ -1,0 +1,80 @@
+.container {
+    --body-bg-color: #0D1117;  /* 页面背景颜色，深蓝黑色 */
+    --border-color: #30363D; /* 边框颜色，深灰色 */
+    --txt-front-color: #C9D1D9; /* 文本颜色，淡灰蓝色，提高可读性 */
+    --base-fontsize: 10px;  
+  
+    --add-text-color: #C9D1D9; /* 加权文本颜色 */
+    --add-bg-color: #161B22; /* 加权背景颜色，更深的蓝黑色 */
+    --add-border-color: #30363D; /* 加权边框颜色 */
+  
+    --sub-text-color: #C9D1D9; /* 减权文字颜色 */
+    --sub-bg-color: #161B22; /* 减权背景颜色 */
+    --sub-border-color: #30363D; /* 减权边框颜色 */
+  
+    --textarea-prompt-bg-color: #0D1117; /* 提示词输入框背景颜色 */
+    --textarea-prompt-focus-border-color: #58A6FF; /* 提示词输入框聚焦边框颜色，亮蓝色 */
+    --textarea-prompt-border-color:#3c3838;  /* 提示词输入框边框颜色 */
+  
+    --editearea-prompt-text-color: #C9D1D9; /* 编辑框文字颜色 */
+    --editearea-prompt-bg-color: #161B22; /* 编辑框背景颜色 */
+    --editearea-prompt-border-color: #30363D; /* 编辑框边框颜色 */
+  
+    --drag-prompt-bg-color: transparent; /* 提示词禁用状态背景颜色 */
+    --drag-prompt-disable-bg-color: #21262D; /* 提示词禁用状态背景颜色，深灰色 */
+    --drag-prompt-edit-shadow: 0px 0px 2px 2px #58A6FF; /* 提示词编辑状态阴影颜色，亮蓝色 */
+  
+    --drag-prompt-border-color: #30363D; /* 拖拽按钮提示词边框颜色 */
+    --drag-prompt-draging-border-color: #4B5563; /* 拖拽按钮拖动时边框颜色 */
+    --drag-prompt-cn-top-border-color: #21262D; /* 拖拽按钮间隔边框颜色 */
+  
+    --navtag-shadow: 0px 0 0.3em 0.3em #161B22; /* 导航阴影 */
+    --navtag-active-bg-color: #f8fffa; /* 导航激活背景色，亮蓝色 */
+    --navtag-active-text-color: #0D1117; /* 导航激活文字，深蓝黑色 */
+  
+    --menu-prompt-text-color: #C9D1D9; /* 菜单框提示词文字颜色 */
+    --menu-prompt-bg-color: #238636; /* 菜单框提示词背景颜色，深绿色 */
+    --menu-prompt-selected-color: linear-gradient(298deg, #58A6FF, #238636); /* tag选中提示词的圆点背景色，蓝绿渐变 */
+  
+    --btn-prompt-text-color: #C9D1D9;
+    --btn-prompt-tactive-text-color: #0D1117; /* 正面激活文字颜色 */
+    --btn-prompt-ntactive-text-color: #C9D1D9; /* 负面激活文字颜色 */
+    --btn-prompt-allctive-text-color: #0D1117; /* 全激活文字颜色 */
+  
+    --btn-prompt-bg-color: #21262D; /* 按钮提示词默认背景颜色，深灰色 */
+    --btn-prompt-tactive-bg-color: linear-gradient(120deg, #58A6FF 0%, #238636 100%); /* 正面激活背景颜色，蓝绿渐变 */
+    --btn-prompt-ntactive-bg-color: #D73A49; /* 负面激活背景颜色，深红色 */
+    --btn-prompt-allctive-bg-color: #F0F6FC; /* 全激活背景颜色，浅灰蓝 */
+  
+    --btn-prompt-hover-bg-color: linear-gradient(120deg, #58A6FF 0%, #238636 100%); /* 提示词hover背景 */
+    --btn-prompt-hover-color: #0D1117; /* 提示词hover文字 */
+    --btn-prompt-hover-triangle-bg-color: #58A6FF; /* 提示词hover三角 */
+  
+    --random-btns-border-color: #58A6FF; /* 随机按钮边框颜色 */
+  
+    --dialog-bg-color: #0D1117; /* 对话框背景颜色 */
+    --dialog-box-shadow: 0 0 5px 2px #21262D; /* 对话框阴影 */
+    --dialog-head-bg-color: linear-gradient(to left, #58A6FF, #238636); /* 对话框头部背景渐变 */
+    --dialog-close-text-color: #C9D1D9; /* 对话框关闭按钮文字颜色 */
+    --dialog-close-hover-text-color: #D73A49; /* 关闭按钮hover颜色 */
+  
+    --scrollbar-track-bg-color: #161B22; /* 滚动条背景颜色 */
+    --scrollbar-thumb-bg-color: #30363D; /* 滚动条滑块背景颜色 */
+  
+    --favorite-tags-text-color: #8B949E; /* 收藏夹文字颜色 */
+    --favorite-tags-active-text-color: #58A6FF; /* 收藏夹激活文字颜色 */
+    --favorite-row-hover-bg-color: #161B22; /* 收藏夹列表hover背景色 */
+    --favorite-row-bottom-border-color: #30363D; /* 收藏夹底部边框颜色 */
+  }
+  
+  .home button, .btn {
+      padding: 0.5em;
+      background: #21262D; /* 按钮背景颜色，深灰色 */
+      color: #C9D1D9; /* 文字颜色，淡灰蓝 */
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 2px;
+      margin: 0px 5px;
+      box-shadow: 4px 0px 7px -1px #0D1117; /* 阴影颜色，深蓝黑 */
+  }
+  

@@ -1,0 +1,49 @@
+*[data-them=default]{
+    @import './default.scss';
+} 
+*[data-them=green]{
+    @import './green.scss';
+} 
+*[data-them=pink]{
+    @import './pink.scss';
+} 
+*[data-them=yellow]{
+    @import './yellow.scss';
+} 
+*[data-them=blue]{
+    @import './blue.scss';
+} 
+
+
+#six_god_k {
+  
+    .mainApp{
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 999999999999;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        border: 0px;
+        height: 100%;
+        width: 100%;
+        overflow-y: scroll;
+        .container{
+     
+            background-color: var(--body-bg-color);
+            color: var(--txt-front-color);
+            font-size: var(--base-fontsize);
+            min-height: 1200px;
+         
+        }
+    }
+  }
+
+
+
+
+ 
+

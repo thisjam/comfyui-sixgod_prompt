@@ -1,0 +1,101 @@
+.container {
+    --base-fontsize: 10px; /* 基础字体大小 */
+    --body-bg-color: #121212; /* 页面背景颜色，非常深的灰，几乎黑色 */
+    --border-color: #323232; /* 边框颜色，深灰 */
+    --txt-front-color: #E0E0E0; /* 文本颜色，浅灰，确保良好的可读性 */
+  
+    --add-text-color: #E0E0E0; /* 加权文本颜色 */
+    --add-bg-color: #1E1E1E; /* 加权背景颜色，稍亮的黑色 */
+    --add-border-color: #323232; /* 加权边框颜色 */
+  
+    --sub-text-color: #E0E0E0; /* 减权文字颜色 */
+    --sub-bg-color: #1E1E1E; /* 减权背景颜色 */
+    --sub-border-color: #323232; /* 减权边框颜色 */
+  
+    --textarea-prompt-bg-color: #121212; /* 提示词输入框背景颜色，与页面背景一致 */
+    --textarea-prompt-focus-border-color: #FF9800; /* 提示词输入框聚焦边框颜色，亮橙色 */
+    --textarea-prompt-border-color:#3c3838;  /* 提示词输入框边框颜色 */
+  
+    --editearea-prompt-text-color: #E0E0E0; /* 编辑框文字颜色 */
+    --editearea-prompt-bg-color: #1E1E1E; /* 编辑框背景颜色 */
+    --editearea-prompt-border-color: #323232; /* 编辑框边框颜色 */
+  
+    --drag-prompt-bg-color: transparent; /* 提示词禁用状态背景颜色 */
+    --drag-prompt-disable-bg-color: #2C2C2C; /* 提示词禁用状态背景颜色，中灰 */
+    --drag-prompt-edit-shadow: 0px 0px 2px 2px #FF9800; /* 提示词编辑状态阴影颜色，亮橙色 */
+  
+    --drag-prompt-border-color: #323232; /* 拖拽按钮提示词边框颜色 */
+    --drag-prompt-draging-border-color: #434343; /* 拖拽按钮拖动时边框颜色 */
+    --drag-prompt-cn-top-border-color: #2C2C2C; /* 拖拽按钮间隔边框颜色 */
+  
+    --navtag-shadow: 0px 0 0.3em 0.3em #1E1E1E; /* 导航阴影，稍亮的黑色 */
+    --navtag-bg-color: #323232; /* 导航默认背景色，深灰 */
+    --navtag-text-color: #BDBDBD; /* 导航默认文字颜色，中灰 */
+    --navtag-active-bg-color: #FF9800; /* 导航激活背景色，亮橙色 */
+    --navtag-active-text-color: #121212; /* 导航激活文字颜色，几乎黑色 */
+  
+    --menu-prompt-text-color: #121212; /* 菜单框提示词文字颜色，几乎黑色 */
+    --menu-prompt-bg-color: #FF9800; /* 菜单框提示词背景颜色，亮橙色，核心色彩 */
+    --menu-prompt-selected-color: linear-gradient(298deg, #FF5722, #FFC107); /* tag选中提示词的圆点背景色，橙色到黄色的渐变 */
+  
+    --btn-prompt-text-color: #E0E0E0; /* 按钮提示词文字颜色，浅灰 */
+    --btn-prompt-tactive-text-color: #121212; /* 正面激活文字颜色，几乎黑色 */
+    --btn-prompt-ntactive-text-color: #FFFFFF; /* 负面激活文字颜色，白色 */
+    --btn-prompt-allctive-text-color: #121212; /* 全激活文字颜色，几乎黑色 */
+  
+    --btn-prompt-bg-color: #2C2C2C; /* 按钮提示词默认背景颜色，中灰 */
+    --btn-prompt-tactive-bg-color: #4CAF50; /* 正面激活背景颜色，绿色 */
+    --btn-prompt-ntactive-bg-color: #F44336; /* 负面激活背景颜色，红色 */
+    --btn-prompt-allctive-bg-color: #FFEB3B; /* 全激活背景颜色，黄色 */
+  
+    --btn-prompt-hover-bg-color: #FF9800; /* 提示词hover背景颜色，亮橙色 */
+    --btn-prompt-hover-color: #121212; /* 提示词hover文字颜色，几乎黑色 */
+    --btn-prompt-hover-triangle-bg-color: #FFC107; /* 提示词hover三角背景颜色，黄色 */
+  
+    --random-btns-border-color: #FF9800; /* 随机按钮边框颜色，亮橙色 */
+  
+    --dialog-bg-color: #121212; /* 对话框背景颜色 */
+    --dialog-box-shadow: 0 0 5px 2px #2C2C2C; /* 对话框阴影 */
+    --dialog-head-text-color: #fff; /* 对话框头部文字 */
+    --dialog-head-bg-color: linear-gradient(to left, #FF5722, #FFC107); /* 对话框头部背景渐变 */
+    --dialog-close-text-color: #E0E0E0; /* 对话框关闭按钮文字颜色 */
+    --dialog-close-hover-text-color: #FF9800; /* 关闭按钮hover颜色 */
+  
+    --scrollbar-track-bg-color: #1E1E1E; /* 滚动条背景颜色 */
+    --scrollbar-thumb-bg-color: #323232; /* 滚动条滑块背景颜色 */
+  
+    --favorite-tags-text-color: #BDBDBD; /* 收藏夹文字颜色，中灰 */
+    --favorite-tags-active-text-color: #5db353; /* 收藏夹激活文字颜色，亮橙色 */
+    --favorite-row-hover-bg-color: #1E1E1E; /* 收藏夹列表hover背景色 */
+    --favorite-row-bottom-border-color: #323232; /* 收藏夹底部边框颜色 */
+  }
+  
+  .home button, .btn {
+    padding: 0.5em 1em; /* 按钮内边距 */
+    font-size: 1rem; /* 文本大小 */
+    background-color: #2C2C2C; /* 默认背景颜色，中灰 */
+    color: #E0E0E0; /* 文本颜色，浅灰 */
+    border: 1px solid #323232; /* 边框颜色，深灰 */
+    border-radius: 4px; /* 边框圆角 */
+    cursor: pointer; /* 鼠标悬停时显示指针 */
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* 平滑过渡效果 */
+
+    /* 按钮悬停效果 */
+    &:hover {
+        background-color: #FF9800; /* 悬停时背景颜色，亮橙色 */
+        color: #121212; /* 悬停时文本颜色，几乎黑色 */
+        border-color: #FF9800; /* 悬停时边框颜色，亮橙色 */
+    }
+
+    // /* 按钮聚焦效果 */
+    // &:focus {
+    //     outline: none; /* 去除默认轮廓 */
+    //     box-shadow: 0 0 0 2px #FF9800; /* 聚焦时添加外阴影，亮橙色 */
+    // }
+
+    // /* 按钮激活效果 */
+    // &:active {
+    //     background-color: #E65100; /* 激活时背景颜色，深橙色 */
+    //     border-color: #E65100; /* 激活时边框颜色，深橙色 */
+    // }
+}

@@ -1,0 +1,95 @@
+.container {
+--body-bg-color:rgb(11, 15, 25);  /* 页面背景颜色 */
+--border-color: #fff;
+--txt-front-color: #fff;
+--base-fontsize: 10px;          /* 基础字体大小 */
+
+
+--add-text-color:#fff;  /* 加权文本颜色 */
+--add-bg-color:rgb(44, 43, 43);  /* 加权背景颜色 */
+--add-border-color:#747171; /* 加权边框颜色 */
+
+--sub-text-color:#fff;  /* 减权文字颜色 */
+--sub-bg-color:rgb(44, 43, 43);  /* 减权背景颜色 */
+--sub-border-color:#747171;  /* 减权边框颜色 */
+
+
+--textarea-prompt-border-color:transparent;  /* 提示词输入框边框颜色 */
+--textarea-prompt-bg-color:#1f2937;  /* 提示词输入框背景颜色 */
+--textarea-prompt-focus-border-color:#374151;  /* 提示词输入框聚焦边框 */
+
+--editearea-prompt-text-color:#fff;  /* 编辑框文字颜色 */
+--editearea-prompt-bg-color:#645d5d;  /* 编辑框背景颜色 */
+--editearea-prompt-border-color:#fff;  /* 编辑框边框颜色 */
+
+
+
+--drag-prompt-bg-color:transparent;  /* 提示词禁用状态背景颜色 */
+--drag-prompt-disable-bg-color:rgb(175, 53, 37,0.56);  /* 提示词禁用状态背景颜色 */
+--drag-prompt-edit-shadow:0px 0px 2px 2px rgb(73, 105, 66);;  /* 提示词编辑状态背景颜色 */
+
+
+--drag-prompt-border-color:#747171;  /* 拖拽按钮提示词边框 */
+--drag-prompt-draging-border-color:#686870;  /* 拖拽按钮拖动时边框 */
+--drag-prompt-cn-top-border-color:#413e3e;  /* 拖拽按钮间隔边框 */
+ 
+
+
+
+--navtag-shadow:0px 0 0.3em 0.3em #ebd5d5;;  /* 导航阴影 */
+--navtag-active-bg-color:#fff;  /* 导航激活背景色 */
+--navtag-active-text-color:#f97316;  /* 导航激活文字 */
+
+
+--menu-prompt-text-color:#fff;  /* 菜单框提示词文字颜色 */
+--menu-prompt-bg-color:#f97316;  /* 菜单框提示词背景颜色 */
+--menu-prompt-selected-color:linear-gradient(298deg,#0045ff,#27db8d);  /* tag有选中提示词的圆点背景色 */
+
+--btn-prompt-text-color:#fff;
+--btn-prompt-tactive-text-color:#000;  /* 正面激活文字颜色 */
+--btn-prompt-ntactive-text-color:#fff;  /* 负面激活文字颜色 */
+--btn-prompt-allctive-text-color:#000;  /* 全激活文字颜色 */
+
+--btn-prompt-bg-color:#3a4454;  /* 按钮提示词默认背景颜色 */
+--btn-prompt-tactive-bg-color:linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);  /* 正面激活背景颜色 */
+--btn-prompt-ntactive-bg-color:rgb(255, 0, 0,0.6);  /* 负面激活背景颜色 */
+--btn-prompt-allctive-bg-color:cyan;  /* 全激活背景颜色 */
+
+--btn-prompt-hover-bg-color:linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);/* 提示词hover背景 */
+--btn-prompt-hover-color:black;/* 提示词hover文字 */
+--btn-prompt-hover-triangle-bg-color:#d4fc79;/* 提示词hover三角 */
+
+
+
+
+--random-btns-border-color:#d4fc79;/* 提示词hover三角 */
+
+--dialog-bg-color:#0b0f19;  /* 对话框背景颜色 */
+--dialog-box-shadow:0 0 5px 2px #8c8fab;  /* 对话框背景颜色 */
+--dialog-head-bg-color:linear-gradient(to left, #9ec5f1, #2e3638);
+--dialog-close-text-color:#fff;  /* 对话框关闭按钮背景颜色 */
+--dialog-close-hover-text-color:#9f1919;  /* 对话框关闭按钮边框颜色 */
+
+
+--scrollbar-track-bg-color:#f1f1f1;  /* 滚动条背景颜色 */
+--scrollbar-thumb-bg-color:#5b666d;  /* 滚动条滑块背景颜色 */
+
+--favorite-tags-text-color:#9d9797;    /* 收藏夹文字颜色 */
+--favorite-tags-active-text-color:#5db353;    /* 收藏夹激活文字颜色 */
+--favorite-row-hover-bg-color:rgb(121, 119, 119);    /* 收藏夹列表hover */
+--favorite-row-bottom-border-color:#2c2e32;    /* 收藏夹文字颜色 */
+}
+
+.home  button,.btn{
+    padding: 0.5em;
+    background: #425d83;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 2px;
+    margin: 0px 5px;
+    box-shadow: 4px 0px 7px -1px #e2e8f3;
+}
+
+
+
