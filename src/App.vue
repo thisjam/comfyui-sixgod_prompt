@@ -60,14 +60,14 @@ function initWindow() {
 
   });
 }
-
+// comfy-multiline-input
 function getTextAreaDoms() {
   setTimeout(() => {
     let textareas=document.querySelectorAll('.comfy-multiline-input');
     graioDoms.value.txtdom=textareas[0];
     graioDoms.value.ntxtdom=textareas[1];
     console.log(graioDoms.value);
-  }, 500);
+  }, 3000);
  
 
 }
