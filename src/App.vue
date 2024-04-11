@@ -4,7 +4,10 @@
    <div class="container">
  
     <div class="main-head"> 
-      <div><button @click="syncTextAreaDoms" class="btn">绑定同步数据</button></div>
+      <div>
+        <button @click="syncTextAreaDoms(true)" class="btn">绑定同步数据</button>
+        <button @click="syncTextAreaDoms(false)" class="btn">交换正反输入框同步数据</button>
+      </div>
       <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span></div>
       <div  class="onoff"  @click="openWindow=false">X</div>
      
@@ -23,12 +26,12 @@
 
 
 <script setup>
-import { onMounted, ref, watchEffect, watch, inject } from 'vue'
+import { onMounted, ref, watchEffect, getCurrentInstance, inject } from 'vue'
 import Home from "../src/components/Home.vue"
 import { globStore } from '@/stores/index.js'
 const eventBus=inject('eventBus')
 
-
+const instance = getCurrentInstance()
 
 const store = globStore()
 const { globData } = store
@@ -71,36 +74,45 @@ function initWindow() {
   });
 }
 // comfy-multiline-input
+
+function bindTextAreaDoms(_isPositive=true,textareas) {
+    if(_isPositive){
+      graioDoms.value.txtdom = textareas[0];
+      graioDoms.value.ntxtdom = textareas[1];
+      eventBus.emit('loadTextArea', [textareas[0].value, textareas[1].value])
+    }
+    else{
+      graioDoms.value.txtdom = textareas[1];
+      graioDoms.value.ntxtdom = textareas[0];
+      eventBus.emit('loadTextArea', [textareas[1].value, textareas[0].value])
+    }
+}
+  
+ 
+
+
 function getTextAreaDoms() {
   setTimeout(() => {
     let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
     if(textareas.length){
       try {
-       graioDoms.value.txtdom=textareas[0];
-       graioDoms.value.ntxtdom=textareas[1];
-       eventBus.emit('loadTextArea',[textareas[0].value,textareas[1].value])
+        bindTextAreaDoms(true,textareas);
       } catch (error) {
         console.log(error);
       }   
     }
   }, 3000);
  
-
 }
-function syncTextAreaDoms() {
+function syncTextAreaDoms(isPositive) {
     let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
     if(textareas.length){
-       graioDoms.value.txtdom=textareas[0];
-       graioDoms.value.ntxtdom=textareas[1];
-       eventBus.emit('loadTextArea',[textareas[0].value,textareas[1].value])
+       bindTextAreaDoms(isPositive,textareas);
        alert("发现【"+textareas.length+"】个文本输入框")
     }
     else{
       alert("同步失败")
     }
- 
- 
-
 }
 
 
@@ -129,7 +141,7 @@ onMounted(() => {
   initWindow()
   currentThem.value=window.localStorage.getItem('currentThem')||'default'
   getJSonData();
-
+  console.log(instance.proxy);
  
  
 

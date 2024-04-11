@@ -9,7 +9,6 @@ import json
 import requests
 import re
 import random
- 
 
  
 class SixGodPrompts:
@@ -18,10 +17,12 @@ class SixGodPrompts:
     
     @classmethod
     def INPUT_TYPES(s):  
+       
         return {"required": {
             "text": ("STRING", {"multiline": True,"placeholder": "alt+q 呼出/隐藏 词库面板"}),
             "clip": ("CLIP",),
-            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize})
+            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),
+      
         }}
     
     RETURN_TYPES = ("CONDITIONING","STRING","INT")
@@ -54,7 +55,7 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.3)",
+    "SixGodPrompts": "SixGodPrompts(v1.4)",
      
 }
 
