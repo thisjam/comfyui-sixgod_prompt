@@ -54,7 +54,7 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.1)",
+    "SixGodPrompts": "SixGodPrompts(v1.2)",
      
 }
 
@@ -128,7 +128,7 @@ def decodeShort(data):
 
 def decodeText(data,trans_text): 
     jsonObj=json.loads(data.content.decode('utf-8'))
-    if hasattr(jsonObj, 'type'):
+    if 'type' in jsonObj:
         if(jsonObj['type']==1): # type=1||2
              return  decodeShort(jsonObj)
         else :

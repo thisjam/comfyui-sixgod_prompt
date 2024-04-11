@@ -19,6 +19,7 @@
 import { onMounted, ref, defineProps, watch, inject } from 'vue'
 import  Draggable from './Draggable.vue'
 import { globStore } from '@/stores/index.js'
+const eventBus = inject('eventBus')
 
 
 const store = globStore()
@@ -179,7 +180,9 @@ watch(
 
 
 onMounted(() => {
-    
+  eventBus.on('loadTextArea',function(arr){
+    textareaValue.value=props.isPositive?arr[0]:arr[1]
+  })
 })
 </script>
 

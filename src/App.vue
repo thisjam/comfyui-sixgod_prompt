@@ -22,9 +22,10 @@
 
 
 <script setup>
-import { onMounted, ref, watchEffect, watch } from 'vue'
+import { onMounted, ref, watchEffect, watch, inject } from 'vue'
 import Home from "../src/components/Home.vue"
 import { globStore } from '@/stores/index.js'
+const eventBus=inject('eventBus')
 
 
 
@@ -75,6 +76,7 @@ function getTextAreaDoms() {
       try {
        graioDoms.value.txtdom=textareas[0];
        graioDoms.value.ntxtdom=textareas[1];
+       eventBus.emit('loadTextArea',[textareas[0].value,textareas[1].value])
       } catch (error) {
         console.log(error);
       }   
@@ -86,9 +88,10 @@ function getTextAreaDoms() {
 function syncTextAreaDoms() {
     let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
     if(textareas.length){
-      graioDoms.value.txtdom=textareas[0];
-      graioDoms.value.ntxtdom=textareas[1];
-      alert("同步了【"+textareas.length+"】个文本输入框")
+       graioDoms.value.txtdom=textareas[0];
+       graioDoms.value.ntxtdom=textareas[1];
+       eventBus.emit('loadTextArea',[textareas[0].value,textareas[1].value])
+       alert("发现【"+textareas.length+"】个文本输入框")
     }
     else{
       alert("同步失败")
