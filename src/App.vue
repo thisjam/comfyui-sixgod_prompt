@@ -1,8 +1,15 @@
 <template>
   <div class="mainApp" :data-them="currentThem" v-show="openWindow">
    <div class="container">
-    <div class="main-head"> <span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index"
-                      :style="{ background: item.bgcolor }"></span></div>
+ 
+    <div class="main-head"> 
+      <div></div>
+      <div> <span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span></div>
+      <div> <button @click="syncTextAreaDoms" class="btn">绑定同步数据</button></div>
+     
+    
+       
+    </div>
       <Home v-if="globData.jsonData" :graioDoms="graioDoms" :pdata="globData.txt_prompt"></Home>
    </div>
   </div>
@@ -63,14 +70,35 @@ function initWindow() {
 // comfy-multiline-input
 function getTextAreaDoms() {
   setTimeout(() => {
-    let textareas=document.querySelectorAll('.comfy-multiline-input');
-    graioDoms.value.txtdom=textareas[0];
-    graioDoms.value.ntxtdom=textareas[1];
-    console.log(graioDoms.value);
+    let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
+    if(textareas.length){
+      try {
+       graioDoms.value.txtdom=textareas[0];
+       graioDoms.value.ntxtdom=textareas[1];
+      } catch (error) {
+        console.log(error);
+      }   
+    }
   }, 3000);
  
 
 }
+function syncTextAreaDoms() {
+    let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
+    if(textareas.length){
+      graioDoms.value.txtdom=textareas[0];
+      graioDoms.value.ntxtdom=textareas[1];
+      alert("同步了【"+textareas.length+"】个文本输入框")
+    }
+    else{
+      alert("同步失败")
+    }
+ 
+ 
+
+}
+
+
 
 
 
@@ -87,10 +115,11 @@ function getJSonData() {
     
   })
 }
-
+ 
 
 onMounted(() => {
-   
+ 
+ 
   getTextAreaDoms()
   initWindow()
   currentThem.value=window.localStorage.getItem('currentThem')||'default'
@@ -132,7 +161,9 @@ onMounted(() => {
 }
 
 .main-head {
- text-align: center;
- padding: 15px;
+  text-align: center;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
 }
 </style>

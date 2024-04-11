@@ -19,12 +19,12 @@ class SixGodPrompts:
     @classmethod
     def INPUT_TYPES(s):  
         return {"required": {
-            "text": ("STRING", {"multiline": True}),
+            "text": ("STRING", {"multiline": True,"placeholder": "alt+q 呼出/隐藏 词库面板"}),
             "clip": ("CLIP",),
             "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize})
         }}
     
-    RETURN_TYPES = ("CONDITIONING","INT")
+    RETURN_TYPES = ("CONDITIONING","STRING","INT")
     FUNCTION = "encode"
     CATEGORY = "conditioning"
     
@@ -32,23 +32,30 @@ class SixGodPrompts:
     def encode(self, clip, text,seed):
         text=extract_tags(text)
         if(contains_chinese(text)==True):
-           text=get(text)
+           text=translate(text)
         tokens = clip.tokenize(text)
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
-        return ([[cond, {"pooled_output": pooled}]]), seed
+        return ([[cond, {"pooled_output": pooled}]],text,seed)
+    
+ 
 
-   
+
+
+
+
 
 WEB_DIRECTORY = "./javascript"
 
 
 NODE_CLASS_MAPPINGS = {
-    "SixGodPrompts": SixGodPrompts
+    "SixGodPrompts": SixGodPrompts,
+    
 }
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts"
+    "SixGodPrompts": "SixGodPrompts(v1.1)",
+     
 }
 
 
@@ -119,14 +126,17 @@ def decodeShort(data):
      restext=list(restcont.keys())[0]
      return restext
 
-def decodeText(data): 
+def decodeText(data,trans_text): 
     jsonObj=json.loads(data.content.decode('utf-8'))
-    if(jsonObj['type']==1): # type=1||2
-      return  decodeShort(jsonObj)
-    else :
-      return  decodeLong(jsonObj)  
+    if hasattr(jsonObj, 'type'):
+        if(jsonObj['type']==1): # type=1||2
+             return  decodeShort(jsonObj)
+        else :
+             return  decodeLong(jsonObj)        
+    else:
+        return trans_text
    
-def get(trans_text):
+def translate(trans_text):
     url1="https://fanyi.baidu.com/transapi"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
@@ -141,8 +151,8 @@ def get(trans_text):
     }
     try:    
         res= requests.post(url1,headers=headers,data=postdata1)   
-        return decodeText(res)
+        return decodeText(res,trans_text)
 
     except requests.exceptions.RequestException as e:
         print(f"err：{e}")
-        return None    
+        return trans_text    

@@ -1,13 +1,13 @@
 <template>
   <div>
     <div> 
-     <textarea ref="Reftextarea" class="textarea-prompt" v-model="textareaValue" @input="autoHeight" 
-     :placeholder="props.isPositive?`正向提示词 支持中文 Prompt`:`负面提示词 支持中文 Negative Prompt`"
-     @keydown.enter.prevent="valiPrompt(props.isPositive,globData.cssList,$event)"
+     <textarea ref="Reftextarea" class="textarea-prompt" v-model="textareaValue"  
+     :placeholder="props.isPositive?`正向提示词 支持中文 Prompt`:`负面提示词 支持中文 Negative Prompt`"  
      @blur="valiPrompt(props.isPositive,globData.cssList,$event)"></textarea>
     </div>
-    <div class="prompt-list">
-        <Draggable :list="props.list" :textareaDom="Reftextarea" :isPositive="props.isPositive"> </Draggable>    
+    <div class="prompt-list"  >
+        <span v-show="props.list.length" class="expand" @click="isShowPromptList=!isShowPromptList">{{isShowPromptList?'▼':'▲'  }}</span>
+        <Draggable v-show="isShowPromptList" :list="props.list" :textareaDom="Reftextarea" :isPositive="props.isPositive"> </Draggable>    
     </div>
   </div>
 </template>
@@ -43,6 +43,7 @@ const props = defineProps({
 
 let textareaValue = ref(null)
 const Reftextarea = ref(null)
+let  isShowPromptList = ref(true)
  
 
  
@@ -162,7 +163,7 @@ watch(
     () => textareaValue.value,
     (newValue, oldValue) => {              
         syncDomData()//同步到comfyui
-        autoHeight()
+        // autoHeight()
     }
 );
 
@@ -187,6 +188,7 @@ onMounted(() => {
  textarea {
   width: 100%;
   min-height: 6em;
+  max-height: 10em;
   border-radius: 5px;
   background: var(--textarea-prompt-bg-color);
   border: 1px  solid var(--textarea-prompt-border-color);
@@ -208,7 +210,7 @@ onMounted(() => {
 
 .textarea-prompt {
   resize: none;
-  overflow: hidden;
+  // overflow: hidden;
   margin: .5em 0;
 }
 
@@ -217,5 +219,16 @@ onMounted(() => {
   // min-height: 70px;
   position: relative;
   width: 100%;
+  .expand{
+    position: absolute;
+    right: 0;
+    top: -1em;
+    font-size: 1em;
+    cursor: pointer;
+
+  }
+ 
 }
+
+
 </style>
