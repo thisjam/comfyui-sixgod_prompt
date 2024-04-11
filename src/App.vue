@@ -1,11 +1,12 @@
 <template>
+  <div  class="float" @click="openWindow=true">六</div>
   <div class="mainApp" :data-them="currentThem" v-show="openWindow">
    <div class="container">
  
     <div class="main-head"> 
-      <div></div>
-      <div> <span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span></div>
-      <div> <button @click="syncTextAreaDoms" class="btn">绑定同步数据</button></div>
+      <div><button @click="syncTextAreaDoms" class="btn">绑定同步数据</button></div>
+      <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span></div>
+      <div  class="onoff"  @click="openWindow=false">X</div>
      
     
        
@@ -64,6 +65,7 @@ function initWindow() {
   document.addEventListener('keydown', function (event) {
     if (event.altKey && event.key.toLowerCase() === 'q') {
       openWindow.value = !openWindow.value;
+    
     }
 
   });
@@ -151,7 +153,7 @@ onMounted(() => {
 
 
 
-<style scoped>
+<style scoped lang="scss">
 
 
 .color {
@@ -168,5 +170,36 @@ onMounted(() => {
     padding: 15px;
     display: flex;
     justify-content: space-between;
+}
+
+.float{
+  position: fixed;
+    bottom: 50px;
+    left: 50px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(
+90deg,#00c9ff,#92fe9d);
+    border-radius: 50%;
+    color: #4c1178;
+    font-size: 22px;
+    line-height: 40px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    font-family: fangsong;
+}
+
+.onoff{
+  font-size: 20px;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  padding: 5px;
+  &:hover{
+    color: rgb(196, 4, 4);
+    font-weight: bold;
+  }
 }
 </style>

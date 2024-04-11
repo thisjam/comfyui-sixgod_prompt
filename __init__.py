@@ -54,7 +54,7 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.2)",
+    "SixGodPrompts": "SixGodPrompts(v1.3)",
      
 }
 
