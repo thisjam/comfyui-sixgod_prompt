@@ -89,15 +89,17 @@ function initShortcut() {
 
     let _firstKey = keys[shortCutOjb.value.firstKey]
     if (_firstKey) {
-
-      switch (event.key.toLowerCase()) {
-        case shortCutOjb.value.secondKey:
-          openWindow.value = !openWindow.value;
-          break;
-      }
+      if(event.key.toLowerCase() == shortCutOjb.value.secondKey){
+        openWindow.value = !openWindow.value;    
+      }        
     }
-    else if (shortCutOjb.value.secondKey && event.key.toLowerCase() == shortCutOjb.value.secondKey) {
-      openWindow.value = !openWindow.value;
+    else if (event.key.toLowerCase() == shortCutOjb.value.secondKey) {
+       
+      if (!shortCutOjb.value.firstKey) {
+        openWindow.value = !openWindow.value;
+      
+      }
+            
     }
 
 
