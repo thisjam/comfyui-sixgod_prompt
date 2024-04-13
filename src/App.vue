@@ -1,43 +1,50 @@
 <template>
-  <div  class="float" @click="openWindow=true">六</div>
+  <div class="float" @click="openWindow = true">六</div>
   <div class="mainApp" :data-them="currentThem" v-show="openWindow">
-   <div class="container">
- 
-    <div class="main-head"> 
-      <div>
-        <button @click="syncTextAreaDoms(true)" class="btn">绑定同步数据</button>
-        <button @click="syncTextAreaDoms(false)" class="btn">交换正反输入框同步数据</button>
+    <div class="container">
+      <div class="main-head">
+        <div>
+          <button @click="syncTextAreaDoms(true)" class="btn">同步数据</button>
+          <button @click="syncTextAreaDoms(false)" class="btn">交换正反同步</button>
+          <button class="btn" @click="openSetting.isopen=!openSetting.isopen">设置</button>
+        </div>
+        <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index"
+            :style="{ background: item.bgcolor }"></span></div>
+        <div class="onoff" @click="openWindow = false">X</div>
       </div>
-      <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span></div>
-      <div  class="onoff"  @click="openWindow=false">X</div>
-     
-    
-       
-    </div>
+      <div class="settings">
+        <Settings :openSetting="openSetting"></Settings>
+      </div>
       <Home v-if="globData.jsonData" :graioDoms="graioDoms" :pdata="globData.txt_prompt"></Home>
-   </div>
+    </div>
   </div>
- 
-     
- 
+
+
+
 
 
 </template>
 
 
 <script setup>
-import { onMounted, ref, watchEffect, getCurrentInstance, inject } from 'vue'
+import { onMounted, ref, watchEffect, inject } from 'vue'
 import Home from "../src/components/Home.vue"
+import Settings from "@/components/promptRender/Settings.vue"
 import { globStore } from '@/stores/index.js'
-const eventBus=inject('eventBus')
+const eventBus = inject('eventBus')
 
-const instance = getCurrentInstance()
+// const instance = getCurrentInstance()
 
 const store = globStore()
 const { globData } = store
 let openWindow = ref(false);
+let openSetting = ref({isopen:false});
 
+const transObj = ref(null)
+const shortCutOjb = ref(null)
  
+
+
 
 let currentThem = ref('');
 let themCssArr = [
@@ -52,9 +59,14 @@ let themCssArr = [
 
 const graioDoms = ref({
   txtdom: null,
-  ntxtdom:null,
-  
+  ntxtdom: null,
+
 });
+function loadSetting() {
+  shortCutOjb.value = JSON.parse(localStorage.getItem('shortCutOjb'))
+  transObj.value = JSON.parse(localStorage.getItem('transObj'))
+
+}
 
 
 function changThem(item) {
@@ -64,62 +76,84 @@ function changThem(item) {
 }
 
 
-function initWindow() {
+function initShortcut() {
+
   document.addEventListener('keydown', function (event) {
-    if (event.altKey && event.key.toLowerCase() === 'q') {
-      openWindow.value = !openWindow.value;
-    
+    let keys = {
+      '': null,
+      'alt': event.altKey,
+      'ctrl': event.ctrlKey,
+      'shift': event.shiftKey,
+      'commond': event.metaKey
     }
 
+    let _firstKey = keys[shortCutOjb.value.firstKey]
+    if (_firstKey) {
+
+      switch (event.key.toLowerCase()) {
+        case shortCutOjb.value.secondKey:
+          openWindow.value = !openWindow.value;
+          break;
+      }
+    }
+    else if (shortCutOjb.value.secondKey && event.key.toLowerCase() == shortCutOjb.value.secondKey) {
+      openWindow.value = !openWindow.value;
+    }
+
+
+    if (event.key.toLowerCase() == 'escape') {
+      openWindow.value = false;
+    }
   });
+
 }
 // comfy-multiline-input
 
-function bindTextAreaDoms(_isPositive=true,textareas) {
-    if(_isPositive){
-      graioDoms.value.txtdom = textareas[0];
-      graioDoms.value.ntxtdom = textareas[1];
-      eventBus.emit('loadTextArea', [textareas[0].value, textareas[1].value])
-    }
-    else{
-      graioDoms.value.txtdom = textareas[1];
-      graioDoms.value.ntxtdom = textareas[0];
-      eventBus.emit('loadTextArea', [textareas[1].value, textareas[0].value])
-    }
+function bindTextAreaDoms(_isPositive = true, textareas) {
+  if (_isPositive) {
+    graioDoms.value.txtdom = textareas[0];
+    graioDoms.value.ntxtdom = textareas[1];
+    eventBus.emit('loadTextArea', [textareas[0].value, textareas[1].value])
+  }
+  else {
+    graioDoms.value.txtdom = textareas[1];
+    graioDoms.value.ntxtdom = textareas[0];
+    eventBus.emit('loadTextArea', [textareas[1].value, textareas[0].value])
+  }
 }
-  
- 
+
+
 
 
 function getTextAreaDoms() {
   setTimeout(() => {
-    let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
-    if(textareas.length){
+    let textareas = document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
+    if (textareas.length) {
       try {
-        bindTextAreaDoms(true,textareas);
+        bindTextAreaDoms(true, textareas);
       } catch (error) {
         console.log(error);
-      }   
+      }
     }
-  }, 3000);
- 
+  }, 500);
+
 }
 function syncTextAreaDoms(isPositive) {
-    let textareas=document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
-    if(textareas.length){
-       bindTextAreaDoms(isPositive,textareas);
-       alert("发现【"+textareas.length+"】个文本输入框")
-    }
-    else{
-      alert("同步失败")
-    }
+  let textareas = document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
+  if (textareas.length) {
+    bindTextAreaDoms(isPositive, textareas);
+    alert("发现【" + textareas.length + "】个文本输入框")
+  }
+  else {
+    alert("同步失败")
+  }
 }
 
 
 
 
 
- 
+
 
 function getJSonData() {
   fetch('api/sixgod/getJsonFiles').then(res => res.json()).then(data => {
@@ -128,23 +162,28 @@ function getJSonData() {
     globData.jsonFileNames.forEach(fileName => {
       globData.cssList[fileName] = 0
     })
-  
-    
   })
 }
- 
+function setTransServer() {
+
+  fetch('api/sixgod/setTransServer', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json', 
+    },
+    body: JSON.stringify(transObj.value), 
+  })
+    
+}
+
 
 onMounted(() => {
- 
- 
+  loadSetting()
   getTextAreaDoms()
-  initWindow()
-  currentThem.value=window.localStorage.getItem('currentThem')||'default'
+  initShortcut()
+  currentThem.value = window.localStorage.getItem('currentThem') || 'default'
   getJSonData();
-  console.log(instance.proxy);
- 
- 
-
+  setTransServer()
 })
 
 
@@ -166,8 +205,6 @@ onMounted(() => {
 
 
 <style scoped lang="scss">
-
-
 .color {
   width: 30px;
   height: 30px;
@@ -179,37 +216,37 @@ onMounted(() => {
 
 .main-head {
   text-align: center;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.float{
+.float {
   position: fixed;
-    bottom: 50px;
-    left: 50px;
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(
-90deg,#00c9ff,#92fe9d);
-    border-radius: 50%;
-    color: #4c1178;
-    font-size: 22px;
-    line-height: 40px;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    font-family: fangsong;
+  bottom: 50px;
+  left: 50px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(90deg, #00c9ff, #92fe9d);
+  border-radius: 50%;
+  color: #4c1178;
+  font-size: 22px;
+  line-height: 40px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  font-family: fangsong;
 }
 
-.onoff{
+.onoff {
   font-size: 20px;
   cursor: pointer;
   width: 20px;
   height: 20px;
   line-height: 20px;
   padding: 5px;
-  &:hover{
+
+  &:hover {
     color: rgb(196, 4, 4);
     font-weight: bold;
   }

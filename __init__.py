@@ -1,3 +1,13 @@
+'''
+Author: Six_God_K
+Date: 2024-04-08 09:37:03
+LastEditors: Six_God_K
+LastEditTime: 2024-04-13 17:15:30
+FilePath: \comfyui-sixgod_prompt\__init__.py
+Description: 
+
+Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+'''
 import sys 
 import os
 import shutil
@@ -9,7 +19,36 @@ import json
 import requests
 import re
 import random
+ 
 
+comfy_path = os.path.dirname(folder_paths.__file__)
+extension_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt')
+mycss_path = os.path.join(extension_path,'sixgod.css')
+css_path = os.path.join(comfy_path, "web",'sixgod.css')
+shutil.copy(mycss_path, css_path)
+
+try:
+    from transerver import Translator,baidu,freebd
+except:
+    transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
+    sys.path.append(transerver_path)
+    import Translator,baidu,freebd
+ 
+
+
+ 
+
+current_script = os.path.realpath(__file__)
+current_folder = os.path.dirname(current_script)   #本插件目录  
+path1 = current_folder+ r"/json"
+path2 = current_folder+ r"/yours"
+
+
+transObj={
+     'server':'',
+     'appid':'',
+     'secret':''
+}
  
 class SixGodPrompts:
     def __init__(self):
@@ -39,11 +78,7 @@ class SixGodPrompts:
         return ([[cond, {"pooled_output": pooled}]],text,seed)
     
  
-
-
-
-
-
+ 
 
 WEB_DIRECTORY = "./javascript"
 
@@ -55,20 +90,20 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.4)",
+    "SixGodPrompts": "SixGodPrompts(v1.5)",
      
 }
 
 
-comfy_path = os.path.dirname(folder_paths.__file__)
-mycss_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt','sixgod.css')
-css_path = os.path.join(comfy_path, "web",'sixgod.css')
-shutil.copy(mycss_path, css_path)
-
-current_script = os.path.realpath(__file__)
-current_folder = os.path.dirname(current_script)   #本插件目录  
-path1 = current_folder+ r"/json"
-path2 = current_folder+ r"/yours"
+def translate(text):
+    if(transObj['server']=='free'):
+         trans_server=freebd.FreeBDTranslator()
+         return Translator.translate_text(trans_server, None,None,text)
+    else:
+         trans_server=baidu.BaiduTranslator()
+         return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
+  
+     
 
 
 def LoadTagsFile():    
@@ -89,15 +124,7 @@ def loadjsonfiles(path,dic):
                         dic[filename]=res
 
 
-
-
-@server.PromptServer.instance.routes.get("/api/sixgod/getJsonFiles")
-async def getJsonFiles(request):
-    josn=LoadTagsFile()
-    return web.json_response(josn, content_type='application/json')
-
-
-
+ 
  
 def contains_chinese(s):
     pattern = re.compile(r'[\u4e00-\u9fff]+')
@@ -116,44 +143,29 @@ def extract_tags(text):
     return text
     
 
- 
-def decodeLong(data):
-      
-     return data['data'][0]['dst']
 
-def decodeShort(data):
-     result=json.loads(data['result'])  
-     restcont=result['content'][0]['mean'][0]['cont']
-     restext=list(restcont.keys())[0]
-     return restext
 
-def decodeText(data,trans_text): 
-    jsonObj=json.loads(data.content.decode('utf-8'))
-    if 'type' in jsonObj:
-        if(jsonObj['type']==1): # type=1||2
-             return  decodeShort(jsonObj)
-        else :
-             return  decodeLong(jsonObj)        
+
+
+    
+@server.PromptServer.instance.routes.get("/api/sixgod/getJsonFiles")
+async def getJsonFiles(request):
+    josn=LoadTagsFile()
+    return web.json_response(josn, content_type='application/json')
+
+@server.PromptServer.instance.routes.post("/api/sixgod/setTransServer")
+async def setTransServer(request):
+    post = await request.json()
+    transObj['server']=post['server']
+    transObj['appid']=post['appid']
+    transObj['secret']=post['secret']
+    return web.json_response('ok', content_type='application/json')
+
+@server.PromptServer.instance.routes.get("/api/sixgod/testTransServer")
+async def testTransServer(request):
+    trans_text = translate('苹果')
+    if (trans_text!='apple'):
+         trans_text='翻译失败'
     else:
-        return trans_text
-   
-def translate(trans_text):
-    url1="https://fanyi.baidu.com/transapi"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36',
-        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
-    }
-
-    postdata1={
-        "from": "zh",
-        "to": "en",
-        "query": trans_text,
-        "source": "txt",
-    }
-    try:    
-        res= requests.post(url1,headers=headers,data=postdata1)   
-        return decodeText(res,trans_text)
-
-    except requests.exceptions.RequestException as e:
-        print(f"err：{e}")
-        return trans_text    
+         trans_text='接口正常'      
+    return web.json_response(trans_text, content_type='application/json')
