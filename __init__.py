@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2024-04-13 21:32:11
+LastEditTime: 2024-04-14 19:18:20
 FilePath: \comfyui-sixgod_prompt\__init__.py
 Description: 
 
@@ -90,7 +90,7 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.51)",
+    "SixGodPrompts": "SixGodPrompts(v1.71)",
      
 }
 

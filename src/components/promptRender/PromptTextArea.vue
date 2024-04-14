@@ -19,6 +19,7 @@
 import { onMounted, ref, defineProps, watch, inject } from 'vue'
 import  Draggable from './Draggable.vue'
 import { globStore } from '@/stores/index.js'
+import romdomJson from '@/randomjson/random1.json';
 const eventBus = inject('eventBus')
 
 
@@ -182,6 +183,11 @@ watch(
 onMounted(() => {
   eventBus.on('loadTextArea',function(arr){
     textareaValue.value=props.isPositive?arr[0]:arr[1]
+  })
+  eventBus.on('suji_prompt',function(){  
+      let randomIndex = Math.floor(Math.random() *romdomJson.length);
+      let random_cn=romdomJson[randomIndex].key
+      props.isPositive&&(textareaValue.value=random_cn)
   })
 })
 </script>

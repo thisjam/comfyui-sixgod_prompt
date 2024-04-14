@@ -17,6 +17,7 @@
           <button @click="deleteAllPrompt(false)">清空反向提示词</button>
           <button @click="toggleRandomOpen">自定义随机词库</button>
           <button @click="toggleFaviriteOpen">收藏夹</button>
+          <button @click="suji_prompt">随机灵感</button>
       </div>
 
       
@@ -44,7 +45,7 @@ import RandPrompt from './promptRender/RandPrompt.vue';
 import PromtList from './promptRender/PromtList.vue';
  
 import { globStore} from '@/stores/index.js'
-
+const eventBus = inject('eventBus')
 const store = globStore()
 const { globData ,toggleRandomOpen,toggleFaviriteOpen} = store
 
@@ -59,7 +60,10 @@ const props = defineProps({
 let promptObj = ref(props.pdata);
 let Refhome = ref(null);
  
- 
+function suji_prompt() {
+  eventBus.emit('suji_prompt')
+}
+
 
 function deleteAllPrompt(isPositive) {
   let _arr = isPositive ? promptObj.value.txt : promptObj.value.ntxt;
