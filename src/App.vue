@@ -21,7 +21,7 @@
 
 
 
-
+ 
 
 </template>
 
@@ -30,9 +30,10 @@
 import { onMounted, ref, watchEffect, inject } from 'vue'
 import Home from "../src/components/Home.vue"
 import Settings from "@/components/promptRender/Settings.vue"
+import AutoComplete from "@/components/promptRender/AutoComplete.vue"
 import { globStore } from '@/stores/index.js'
 const eventBus = inject('eventBus')
-
+const $common = inject('common')
 // const instance = getCurrentInstance()
 
 const store = globStore()
@@ -42,6 +43,7 @@ let openSetting = ref({isopen:false});
 
 const transObj = ref(null)
 const shortCutOjb = ref(null)
+
  
 
 
@@ -164,6 +166,8 @@ function getJSonData() {
     globData.jsonFileNames.forEach(fileName => {
       globData.cssList[fileName] = 0
     })
+     globData.prompt_tips=  $common.JsonObjtoArr( globData.jsonData)
+     console.log(globData.prompt_tips);
   })
 }
 function setTransServer() {

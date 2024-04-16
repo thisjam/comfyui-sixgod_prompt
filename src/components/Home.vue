@@ -18,6 +18,7 @@
           <button @click="toggleRandomOpen">自定义随机词库</button>
           <button @click="toggleFaviriteOpen">收藏夹</button>
           <button @click="suji_prompt">随机灵感</button>
+          <AutoComplete></AutoComplete>
       </div>
 
       
@@ -43,6 +44,7 @@ import PromptTextArea from './promptRender/PromptTextArea.vue';
 import Favorites from './promptRender/Favorites.vue';
 import RandPrompt from './promptRender/RandPrompt.vue';
 import PromtList from './promptRender/PromtList.vue';
+import AutoComplete from './promptRender/AutoComplete.vue';
  
 import { globStore} from '@/stores/index.js'
 const eventBus = inject('eventBus')
@@ -132,6 +134,25 @@ div {
 }
 .prompt-tools{
   margin: 10px 0;
+  display: flex;
+
+  align-items: center;
+  button{
+    margin-right: 10px;
+  }
+}
+
+.nav-menu {
+  margin-bottom: 10px;
+}
+
+.nav-menu .nav-selected {
+  background: var(--body-bg-color);
+  color: var(--body-color);
+  border-radius: 3px;
+}
+
+.nav-menu .nav-selected:hover {
 }
 
  

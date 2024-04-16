@@ -1,9 +1,9 @@
 /*
  * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
  * @Date: 2024-03-24 16:41:40
- * @LastEditors: thisjam 3213441409@qq.com
- * @LastEditTime: 2024-04-01 16:11:17
- * @FilePath: \webui-prompt\src\js\common.js
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2024-04-15 21:12:14
+ * @FilePath: \comfyui-sixgod_prompt\src\js\utils\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 
@@ -35,6 +35,27 @@ const common = {
     }
   
     return undefined;
+  },
+
+  JsonObjtoArr(jsonObj) {
+    const arr = [];
+    function traverse(obj) {
+      if (typeof obj !== 'object' || obj === null) {
+        return;
+      }
+      for (let [key, value] of Object.entries(obj)) {
+        if (typeof value === 'string') {
+           arr.push({'cn': key,'en': value });       
+        }
+        else if(typeof value === 'object'){
+          traverse(value);
+        }
+      }
+    }
+  
+    traverse(jsonObj);
+  
+    return arr;
   }
   
 };

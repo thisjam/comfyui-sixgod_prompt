@@ -181,8 +181,17 @@ watch(
 
 
 onMounted(() => {
+  //初始同步comfyui节点输入框
   eventBus.on('loadTextArea',function(arr){
     textareaValue.value=props.isPositive?arr[0]:arr[1]
+  })
+  //不通用部分
+  eventBus.on('autoTips',function(tempPrompt){
+      if (props.isPositive) {
+        textareaValue.value = tempPrompt
+        props.list.push({ en: tempPrompt.en, state: 'enable', cn: tempPrompt.cn, w: 1 })
+      }
+       
   })
   eventBus.on('suji_prompt',function(){  
       let randomIndex = Math.floor(Math.random() *romdomJson.length);
