@@ -2,7 +2,7 @@
  * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
  * @Date: 2024-03-25 17:39:31
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-04-15 21:19:43
+ * @LastEditTime: 2024-04-26 17:26:37
  * @FilePath: \comfyui-sixgod_prompt\src\stores\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,6 +19,7 @@ export const globStore = defineStore('globStore', () => {
         jsonFileNames:[],
         cssList:{},
         is_txt_prompt_page:true,
+        is_suiji_loading:false,
         txt_prompt:{
             txt:[],//[{zh:zh,en:en,state:true}]
             ntxt:[]

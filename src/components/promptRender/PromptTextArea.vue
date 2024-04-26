@@ -178,6 +178,17 @@ watch(
   { deep: true }
 );
 
+async function imaginePrompt(imaginetext) {
+ let res=await fetch('api/sixgod/imaginePrompt', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json', 
+    },
+    body: JSON.stringify(imaginetext), 
+  })
+ return res
+  
+}
 
 
 onMounted(() => {
@@ -193,10 +204,23 @@ onMounted(() => {
       }
        
   })
-  eventBus.on('suji_prompt',function(){  
-      let randomIndex = Math.floor(Math.random() *romdomJson.length);
-      let random_cn=romdomJson[randomIndex].key
-      props.isPositive&&(textareaValue.value=random_cn)
+  eventBus.on('suji_prompt',async(text,placeholderPrompts)=>{  
+     if(props.isPositive){ 
+      if(text){
+        globData.is_suiji_loading=true
+        let res= await imaginePrompt(text)
+        textareaValue.value=placeholderPrompts.start+await res.json()+placeholderPrompts.end
+        globData.is_suiji_loading=false
+      }
+      else{
+        let randomIndex = Math.floor(Math.random() *romdomJson.length);
+        let random_cn=romdomJson[randomIndex].key
+        textareaValue.value=placeholderPrompts.start+random_cn+placeholderPrompts.end
+      }
+     
+          
+     }
+   
   })
 })
 </script>

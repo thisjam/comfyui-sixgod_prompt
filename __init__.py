@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2024-04-16 11:34:56
+LastEditTime: 2024-04-26 21:31:10
 FilePath: \comfyui-sixgod_prompt\__init__.py
 Description: 
 
@@ -20,6 +20,7 @@ import requests
 import re
 import random
  
+ 
 
 comfy_path = os.path.dirname(folder_paths.__file__)
 extension_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt')
@@ -28,11 +29,11 @@ css_path = os.path.join(comfy_path, "web",'sixgod.css')
 shutil.copy(mycss_path, css_path)
 
 try:
-    from transerver import Translator,baidu,freebd
+    from transerver import Translator,baidu,freebd,llmTranslate,llm
 except:
     transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
     sys.path.append(transerver_path)
-    import Translator,baidu,freebd
+    import Translator,baidu,freebd,llmTranslate,llm
  
 
 
@@ -47,7 +48,8 @@ path2 = current_folder+ r"/yours"
 transObj={
      'server':'',
      'appid':'',
-     'secret':''
+     'secret':'',
+     'llmName':''
 }
  
 class SixGodPrompts:
@@ -61,6 +63,7 @@ class SixGodPrompts:
             "text": ("STRING", {"multiline": True,"placeholder": "alt+q 呼出/隐藏 词库面板"}),
             "clip": ("CLIP",),
             "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),
+            # "isPositive": ("BOOLEAN", {"default": True})
       
         }}
     
@@ -90,7 +93,7 @@ NODE_CLASS_MAPPINGS = {
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SixGodPrompts": "SixGodPrompts(v1.72)",
+    "SixGodPrompts": "SixGodPrompts",
      
 }
 
@@ -98,8 +101,11 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 def translate(text):
     if(transObj['server']=='free'):
          trans_server=freebd.FreeBDTranslator()
-         return Translator.translate_text(trans_server, None,None,text)
-    else:
+         return Translator.translate_text(trans_server,text)
+    elif(transObj['server']=='llm'):
+         trans_server=llmTranslate.LLMTranslator()
+         return Translator.translate_text(trans_server,text,transObj['llmName'])
+    elif(transObj['server']=='baidu'):
          trans_server=baidu.BaiduTranslator()
          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
   
@@ -153,19 +159,30 @@ async def getJsonFiles(request):
     josn=LoadTagsFile()
     return web.json_response(josn, content_type='application/json')
 
+
+@server.PromptServer.instance.routes.get("/api/sixgod/testTransServer")
+async def testTransServer(request):
+    trans_text = translate('苹果')
+    if (trans_text.lower()!='apple'):
+         trans_text='翻译失败'
+    else:
+         trans_text='接口正常'      
+    return web.json_response(trans_text, content_type='application/json')
+
 @server.PromptServer.instance.routes.post("/api/sixgod/setTransServer")
 async def setTransServer(request):
     post = await request.json()
     transObj['server']=post['server']
     transObj['appid']=post['appid']
     transObj['secret']=post['secret']
+    transObj['llmName']=post['llmName']
     return web.json_response('ok', content_type='application/json')
 
-@server.PromptServer.instance.routes.get("/api/sixgod/testTransServer")
-async def testTransServer(request):
-    trans_text = translate('苹果')
-    if (trans_text!='apple'):
-         trans_text='翻译失败'
-    else:
-         trans_text='接口正常'      
-    return web.json_response(trans_text, content_type='application/json')
+@server.PromptServer.instance.routes.post("/api/sixgod/imaginePrompt")
+async def randomPrompt(request):
+        post = await request.json()
+        Preset='你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
+        res=llm.chat(post,transObj['llmName'],Preset)
+        return web.json_response(res, content_type='application/json')
+    
+ 

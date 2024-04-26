@@ -14,11 +14,18 @@
                         <select name="translateServer" v-model="transObj.server">                    
                             <option value="free">免费</option>
                             <option value="baidu">百度</option>
-                            <option value="ali" >阿里（功能还没写，先不要用）</option>
-                            <option value="tx" >腾讯（功能还没写，先不要用）</option>
-                        </select>        
-                     <label for="">APPID:</label> <input type="text" v-model="transObj.appid"> 
-                     <label for="">密钥:</label> <input type="text" v-model="transObj.secret">
+                            <option value="llm">大语言模型</option>
+                            <!-- <option value="ali" >阿里（功能还没写，先不要用）</option> -->
+                            <!-- <option value="tx" >腾讯（功能还没写，先不要用）</option> -->
+                        </select>  
+                     
+                        <template v-if="transObj.server=='baidu'">
+                           <label for="">APPID:</label> <input type="text" v-model="transObj.appid"> 
+                           <label for="">密钥:</label> <input type="text" v-model="transObj.secret">
+                        </template>
+                      
+                   
+                    
                      <button class="btn" @click="testTransServer">测试翻译</button><label for="">{{ txt_test_trans }}</label>
             
                 </div>
@@ -38,7 +45,8 @@
                    
                   
                 </div>
-                <div>
+                <div class="llm" v-show="activeTag=='大语言模型'"> 
+                     <label for="">模型名:</label> <input type="text" v-model="transObj.llmName">           
                 </div>
             </div>
             <div class="save" ><button @click="saveSettings" class="btn">保存</button></div>
@@ -66,11 +74,13 @@ const props = defineProps({
 
 let activeTag = ref("翻译")
 let txt_test_trans = ref("")
-const settingNavs=ref(['翻译','快捷键'])
+const settingNavs=ref(['翻译','快捷键','大语言模型'])
 const transObj= ref({
     server:'free',
     appid:'',
-    secret:''
+    secret:'',
+    llmName:'qwen1_5-4b-chat-q2_k',
+    
    
 })
 const shortCutOjb=ref({
@@ -95,9 +105,9 @@ function saveSettings(istips=true) {
  
 
 function loadSetting(){
-    if(localStorage.getItem('shortCutOjb')){
+    if(localStorage.getItem('shortCutOjb')&&localStorage.getItem('transObj')){
         shortCutOjb.value = JSON.parse(localStorage.getItem('shortCutOjb'))
-          transObj.value = JSON.parse(localStorage.getItem('transObj'))
+        transObj.value = JSON.parse(localStorage.getItem('transObj'))
     }
     else{
         saveSettings(false)

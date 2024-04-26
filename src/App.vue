@@ -4,9 +4,9 @@
     <div class="container">
       <div class="main-head">
         <div>
-          <button @click="syncTextAreaDoms(true)" class="btn">同步数据</button>
-          <button @click="syncTextAreaDoms(false)" class="btn">交换正反同步</button>
-          <button class="btn" @click="openSetting.isopen=!openSetting.isopen">设置</button>
+          <button @click="syncTextAreaDoms" class="btn">同步数据</button>
+        <!--<button @click="syncTextAreaDoms(false)" class="btn">交换正反同步</button>-->
+          <button class="btn" @click="openSetting.isopen = !openSetting.isopen">设置</button>
         </div>
         <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index"
             :style="{ background: item.bgcolor }"></span></div>
@@ -21,9 +21,9 @@
 
 
 
- 
 
-</template>
+
+ </template> 
 
 
 <script setup>
@@ -39,12 +39,13 @@ const $common = inject('common')
 const store = globStore()
 const { globData } = store
 let openWindow = ref(false);
-let openSetting = ref({isopen:false});
+let openSetting = ref({ isopen: false });
 
 const transObj = ref(null)
 const shortCutOjb = ref(null)
-
  
+
+
 
 
 
@@ -91,17 +92,17 @@ function initShortcut() {
 
     let _firstKey = keys[shortCutOjb.value.firstKey]
     if (_firstKey) {
-      if(event.key.toLowerCase() == shortCutOjb.value.secondKey){
-        openWindow.value = !openWindow.value;    
-      }        
+      if (event.key.toLowerCase() == shortCutOjb.value.secondKey) {
+        openWindow.value = !openWindow.value;
+      }
     }
     else if (event.key.toLowerCase() == shortCutOjb.value.secondKey) {
-       
+
       if (!shortCutOjb.value.firstKey) {
         openWindow.value = !openWindow.value;
-      
+
       }
-            
+
     }
 
 
@@ -113,17 +114,23 @@ function initShortcut() {
 }
 // comfy-multiline-input
 
-function bindTextAreaDoms(_isPositive = true, textareas) {
-  if (_isPositive) {
-    graioDoms.value.txtdom = textareas[0];
-    graioDoms.value.ntxtdom = textareas[1];
-    eventBus.emit('loadTextArea', [textareas[0].value, textareas[1].value])
-  }
-  else {
-    graioDoms.value.txtdom = textareas[1];
-    graioDoms.value.ntxtdom = textareas[0];
-    eventBus.emit('loadTextArea', [textareas[1].value, textareas[0].value])
-  }
+function bindTextAreaDoms(textareas) {
+ 
+    let top1=textareas[0].getBoundingClientRect().top
+    let top2=textareas[1].getBoundingClientRect().top
+    if(top1<top2){
+      graioDoms.value.txtdom = textareas[0];
+      graioDoms.value.ntxtdom = textareas[1];
+    }
+    else{
+      graioDoms.value.txtdom = textareas[1];
+      graioDoms.value.ntxtdom = textareas[0];
+     
+    }
+  
+    eventBus.emit('loadTextArea', [graioDoms.value.txtdom.value, graioDoms.value.ntxtdom.value])
+   
+
 }
 
 
@@ -134,7 +141,7 @@ function getTextAreaDoms() {
     let textareas = document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
     if (textareas.length) {
       try {
-        bindTextAreaDoms(true, textareas);
+        bindTextAreaDoms(textareas);
       } catch (error) {
         console.log(error);
       }
@@ -142,10 +149,10 @@ function getTextAreaDoms() {
   }, 500);
 
 }
-function syncTextAreaDoms(isPositive) {
+function syncTextAreaDoms() {
   let textareas = document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
   if (textareas.length) {
-    bindTextAreaDoms(isPositive, textareas);
+    bindTextAreaDoms(textareas);
     alert("发现【" + textareas.length + "】个文本输入框")
   }
   else {
@@ -166,8 +173,8 @@ function getJSonData() {
     globData.jsonFileNames.forEach(fileName => {
       globData.cssList[fileName] = 0
     })
-     globData.prompt_tips=  $common.JsonObjtoArr( globData.jsonData)
-     console.log(globData.prompt_tips);
+    globData.prompt_tips = $common.JsonObjtoArr(globData.jsonData)
+ 
   })
 }
 function setTransServer() {
@@ -175,13 +182,14 @@ function setTransServer() {
   fetch('api/sixgod/setTransServer', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json', 
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(transObj.value), 
+    body: JSON.stringify(transObj.value),
   })
-    
+
 }
 
+ 
 
 onMounted(() => {
   loadSetting()
@@ -190,6 +198,7 @@ onMounted(() => {
   currentThem.value = window.localStorage.getItem('currentThem') || 'default'
   getJSonData();
   setTransServer()
+ 
 })
 
 
