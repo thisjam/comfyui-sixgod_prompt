@@ -209,7 +209,8 @@ onMounted(() => {
       if(text){
         globData.is_suiji_loading=true
         let res= await imaginePrompt(text)
-        textareaValue.value=placeholderPrompts.start+await res.json()+placeholderPrompts.end
+        let imaginePrompt=await res.json()
+        textareaValue.value=placeholderPrompts.start+imaginePrompt+placeholderPrompts.end
         globData.is_suiji_loading=false
       }
       else{

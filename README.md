@@ -1,5 +1,15 @@
+<!--
+ * @Author: Six_God_K
+ * @Date: 2024-04-08 09:37:03
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2024-04-27 13:39:16
+ * @FilePath: \comfyui-sixgod_prompt\README.md
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+-->
 
-# v1.73
+# v1.74
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，觉得好用的可以给我点颗星 ###
