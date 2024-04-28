@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2024-04-08 09:37:03
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-04-27 13:39:16
+ * @LastEditTime: 2024-04-28 21:02:38
  * @FilePath: \comfyui-sixgod_prompt\README.md
  * @Description: 
  * 
@@ -25,11 +25,11 @@
 
 # <img src="imgs/wx.jpg" width="300" height="400" />
 ### 插件安装
-  * comfyui版本 
+  * webui、forge版本  
   ```sh
      https://github.com/thisjam/sd-webui-oldsix-prompt.git
   ```
-  * webui、forge版本 
+  * comfyui版本
  ```sh
     https://github.com/thisjam/comfyui-sixgod_prompt.git
  ```
