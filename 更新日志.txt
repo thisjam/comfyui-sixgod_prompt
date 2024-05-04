@@ -24,3 +24,14 @@
 
 -----v1.74-----------------------------------------------------
 词库小调整
+
+-----v1.75-----------------------------------------------------
+1、呼出图标添加拖动功能
+2、大预言模型参数开放，支持GPU
+	llama-cpp-python的gpu离线包下载地址
+	https://abetlen.github.io/llama-cpp-python/whl/cu121/
+	https://abetlen.github.io/llama-cpp-python/whl/cu122/
+	https://abetlen.github.io/llama-cpp-python/whl/cu123/
+	https://abetlen.github.io/llama-cpp-python/whl/cu124/
+3、新增一个纯文本节点，带自动翻译中文功能
+

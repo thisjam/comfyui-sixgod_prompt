@@ -1,5 +1,6 @@
 <template>
-  <div class="float" @click="openWindow = true">六</div>
+  <!-- <div class="float" @click="openWindow = true">六</div> -->
+  <div class="float"  v-draggable="{ onClick: ()=>openWindow = true }">六</div>
   <div class="mainApp" :data-them="currentThem" v-show="openWindow">
     <div class="container">
       <div class="main-head">

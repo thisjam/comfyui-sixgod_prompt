@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-23 22:30:05
 LastEditors: Six_God_K
-LastEditTime: 2024-04-26 21:30:17
-FilePath: \ComfyUI\custom_nodes\comfyui-sixgod_prompt\transerver\llm.py
+LastEditTime: 2024-05-04 12:06:20
+FilePath: \comfyui-sixgod_prompt\transerver\llm.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -58,23 +58,28 @@ try:
       from llama_cpp import Llama
       comfy_path = os.path.dirname(folder_paths.__file__)
       extension_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt','models')
-      def chat(question,modelName="qwen1_5-4b-chat-q2_k",Preset="Translate Chinese into English"):
+      def chat(question,**kwargs):
         llm = Llama(
-            model_path=os.path.join(extension_path,modelName)+'.gguf',
+            model_path=os.path.join(extension_path,kwargs['llmName'])+'.gguf',
+            n_gpu_layers=int(kwargs['n_gpu_layers']),
         )
         res=llm.create_chat_completion(
             messages = [
-                {"role": "system", "content":Preset},
+                {"role": "system", "content":kwargs['preset']},
                 {
                     "role": "user",
                     "content": question
                 }
             ],
-            temperature=1.2
+            temperature=float(kwargs['temperature'])
 
         )
     
         return(res['choices'][0]["message"]['content'])
+      
+         
+      def chat_imagine(question,settings):
+          return chat(question,**settings)
 
 
 except Exception as e:

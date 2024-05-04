@@ -44,9 +44,12 @@
                              
                    
                   
-                </div>
-                <div class="llm" v-show="activeTag=='大语言模型'"> 
-                     <label for="">模型名:</label> <input type="text" v-model="transObj.llmName">           
+                </div>           
+                <div class="llm form-layout" v-show="activeTag == '大语言模型'">
+                    <p> <label for="">模型名【不要带文件名后缀】:</label> <input type="text" v-model="transObj.llmName"> </p>
+                    <p> <label for="">在gpu运行的层数【0~？,-1是所有层在gpu上运行】:</label> <input type="text" v-model="transObj.n_gpu_layers"></p>
+                    <p> <label for="">temperature【想象力】:</label> <input type="text" v-model="transObj.temperature"> </p>
+                    <p> <label for="">preset【系统指令预设】:</label> <input type="text" v-model="transObj.preset"> </p>
                 </div>
             </div>
             <div class="save" ><button @click="saveSettings" class="btn">保存</button></div>
@@ -75,13 +78,14 @@ const props = defineProps({
 let activeTag = ref("翻译")
 let txt_test_trans = ref("")
 const settingNavs=ref(['翻译','快捷键','大语言模型'])
-const transObj= ref({
-    server:'free',
-    appid:'',
-    secret:'',
-    llmName:'qwen1_5-4b-chat-q2_k',
-    
-   
+const transObj = ref({
+    server: 'free',
+    appid: '',
+    secret: '',
+    llmName: 'qwen1_5-4b-chat-q2_k',
+    n_gpu_layers: -1,
+    temperature: 1.2,
+    preset: '你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
 })
 const shortCutOjb=ref({
     firstKey:'alt',
@@ -105,13 +109,24 @@ function saveSettings(istips=true) {
  
 
 function loadSetting(){
-    if(localStorage.getItem('shortCutOjb')&&localStorage.getItem('transObj')){
-        shortCutOjb.value = JSON.parse(localStorage.getItem('shortCutOjb'))
-        transObj.value = JSON.parse(localStorage.getItem('transObj'))
-    }
-    else{
+    let _shortCutOjb = localStorage.getItem('shortCutOjb')
+    let _transObj = localStorage.getItem('transObj')
+
+    if ((!_shortCutOjb || !_transObj)) {
         saveSettings(false)
-    }  
+    }
+    else {
+        let json_shortCutOjb = JSON.parse(_shortCutOjb)
+        let json_transObj = JSON.parse(_transObj)
+        if (Object.keys(json_shortCutOjb).length == Object.keys(shortCutOjb.value).length && Object.keys(json_transObj).length == Object.keys(transObj.value).length) {
+            shortCutOjb.value = json_shortCutOjb
+            transObj.value = json_transObj
+        }
+        else {
+            saveSettings(false)
+        }
+
+    }
 }
 
 function setTransServer() {
@@ -181,5 +196,18 @@ onMounted(() => {
 .save{
      text-align: center;
      padding: 2em;
+}
+.form-layout {
+
+ 
+p {
+    display: flex;
+}
+label {
+    flex: 3;
+}
+input {
+    flex: 6;
+}
 }
 </style>

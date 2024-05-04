@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2024-04-26 21:31:10
+LastEditTime: 2024-05-04 12:52:21
 FilePath: \comfyui-sixgod_prompt\__init__.py
 Description: 
 
@@ -45,26 +45,18 @@ path1 = current_folder+ r"/json"
 path2 = current_folder+ r"/yours"
 
 
-transObj={
-     'server':'',
-     'appid':'',
-     'secret':'',
-     'llmName':''
-}
+transObj={}
  
 class SixGodPrompts:
     def __init__(self):
-        pass
-    
+        pass  
     @classmethod
     def INPUT_TYPES(s):  
        
         return {"required": {
             "text": ("STRING", {"multiline": True,"placeholder": "alt+q 呼出/隐藏 词库面板"}),
             "clip": ("CLIP",),
-            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),
-            # "isPositive": ("BOOLEAN", {"default": True})
-      
+            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),   
         }}
     
     RETURN_TYPES = ("CONDITIONING","STRING","INT")
@@ -80,20 +72,36 @@ class SixGodPrompts:
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         return ([[cond, {"pooled_output": pooled}]],text,seed)
     
- 
- 
 
+class SixGodPrompts_Text:
+    @classmethod
+    def INPUT_TYPES(s):    
+        return {"required": {
+            "text": ("STRING", {"multiline": True,"placeholder": "带自动中文翻译功能的文本"}),
+        }}
+    
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "encode"
+    CATEGORY = "conditioning"
+    def encode(self, text):
+        text=extract_tags(text)
+        if(contains_chinese(text)==True):
+           text=translate(text)
+        return (text,)
+ 
 WEB_DIRECTORY = "./javascript"
 
 
 NODE_CLASS_MAPPINGS = {
     "SixGodPrompts": SixGodPrompts,
+    "SixGodPrompts_Text": SixGodPrompts_Text,
     
 }
 
  
 NODE_DISPLAY_NAME_MAPPINGS = {
     "SixGodPrompts": "SixGodPrompts",
+    "SixGodPrompts_Text": "SixGodPrompts_Text",
      
 }
 
@@ -104,7 +112,7 @@ def translate(text):
          return Translator.translate_text(trans_server,text)
     elif(transObj['server']=='llm'):
          trans_server=llmTranslate.LLMTranslator()
-         return Translator.translate_text(trans_server,text,transObj['llmName'])
+         return Translator.translate_text(trans_server,text,transObj)
     elif(transObj['server']=='baidu'):
          trans_server=baidu.BaiduTranslator()
          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
@@ -172,17 +180,13 @@ async def testTransServer(request):
 @server.PromptServer.instance.routes.post("/api/sixgod/setTransServer")
 async def setTransServer(request):
     post = await request.json()
-    transObj['server']=post['server']
-    transObj['appid']=post['appid']
-    transObj['secret']=post['secret']
-    transObj['llmName']=post['llmName']
+    global transObj; transObj= {**post} 
     return web.json_response('ok', content_type='application/json')
 
 @server.PromptServer.instance.routes.post("/api/sixgod/imaginePrompt")
-async def randomPrompt(request):
+async def imaginePrompt(request):
         post = await request.json()
-        Preset='你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
-        res=llm.chat(post,transObj['llmName'],Preset)
+        res=llm.chat_imagine(post,transObj)
         return web.json_response(res, content_type='application/json')
     
  

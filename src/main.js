@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2024-03-24 15:55:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-04-11 21:57:25
+ * @LastEditTime: 2024-05-04 12:18:55
  * @FilePath: \comfyui-sixgod_prompt\src\main.js
  * @Description: 
  * 
@@ -18,6 +18,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import common from '/src/js/utils/index.js'
 import eventBus from '/src/js/utils/eventBus.js'
+import draggable from '/src/js/utils/drag.js'
 // import { app } from "../../../web/scripts
 
 
@@ -32,6 +33,7 @@ import eventBus from '/src/js/utils/eventBus.js'
     // app.config.globalProperties.$common = common;
     vueapp.provide('common', common);
     vueapp.provide('eventBus', eventBus);
+    vueapp.directive('draggable', draggable);
     vueapp.mount(div)
 
     
