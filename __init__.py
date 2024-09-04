@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2024-05-04 12:52:21
-FilePath: \comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2024-09-03 23:35:43
+FilePath: \ComfyUI\custom_nodes\comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -21,9 +21,12 @@ import re
 import random
  
  
-
+current_directory = os.getcwd()
 comfy_path = os.path.dirname(folder_paths.__file__)
-extension_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt')
+extension_path1 = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt-main')
+extension_path2 = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt')
+extension_path= extension_path1 if os.path.isdir(extension_path1) else extension_path2
+print(extension_path)
 mycss_path = os.path.join(extension_path,'sixgod.css')
 css_path = os.path.join(comfy_path, "web",'sixgod.css')
 shutil.copy(mycss_path, css_path)
@@ -89,12 +92,36 @@ class SixGodPrompts_Text:
            text=translate(text)
         return (text,)
  
+class SixGodPrompts_PreivewText:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "text": ("STRING", {"forceInput": True}),
+            },
+            "hidden": {
+                "unique_id": "UNIQUE_ID",
+                "extra_pnginfo": "EXTRA_PNGINFO",
+            },
+        }
+
+   
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "preview"
+    OUTPUT_NODE = True
+    CATEGORY = "conditioning"
+
+    def preview(self, text, unique_id=None, extra_pnginfo=None):
+        return {"ui": {"text": text}, "result": (text,)}
+
+
 WEB_DIRECTORY = "./javascript"
 
 
 NODE_CLASS_MAPPINGS = {
     "SixGodPrompts": SixGodPrompts,
     "SixGodPrompts_Text": SixGodPrompts_Text,
+    "SixGodPrompts_PreivewText": SixGodPrompts_PreivewText,
     
 }
 
@@ -102,7 +129,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "SixGodPrompts": "SixGodPrompts",
     "SixGodPrompts_Text": "SixGodPrompts_Text",
-     
+
 }
 
 

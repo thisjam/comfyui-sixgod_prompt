@@ -2,8 +2,8 @@
  * @Author: thisjam 3213441409@qq.com
  * @Date: 2024-03-27 22:30:40
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-04-04 11:59:16
- * @FilePath: \webui-prompt\src\components\promptRender\Draggable.vue
+ * @LastEditTime: 2024-09-04 10:55:07
+ * @FilePath: \comfyui-sixgod_prompt\src\components\promptRender\Draggable.vue
  * @Description:  打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
@@ -261,6 +261,7 @@ textarea:focus {
     position: relative;
     opacity: .8;
     background: var(--drag-prompt-bg-color);
+    font-size: 0.8em;
    
     .operation{
        position: absolute; 
@@ -277,6 +278,9 @@ textarea:focus {
     }
     .add ,.sub{  
       height: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center
     }
     .add{
       color: var(--add-text-color);
@@ -301,7 +305,7 @@ textarea:focus {
       padding: .5em;
       display: inline-block;
       cursor: pointer;
-      font-size: .5em;
+      // font-size: .5em;
       width: 15em;
       white-space: nowrap;
       overflow: hidden;

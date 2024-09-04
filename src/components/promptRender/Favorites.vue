@@ -9,7 +9,9 @@
             <div>
                 <button class="btn" @click="addPromptToFavorites(0, $event)">收藏当前正面</button>
                 <button class="btn" @click="addPromptToFavorites(1, $event)">收藏当前负面</button>
-                <button class="btn" @click="deleteAll">全部删除</button>
+                <button class="btn" @click="deleteAll">全部删除</button>              
+                <button class="btn" @click="backups">备份收藏</button>
+                <button class="btn" @click="restore">导入收藏</button>
                 <button class="btn" @click="save">保存</button>
             </div>
         </template>
@@ -50,6 +52,7 @@ import { onMounted, nextTick, ref, watchEffect,computed } from 'vue'
 import Dialog from "@/components/promptRender/Dialog.vue"
 
 import { globStore } from '@/stores/index.js'
+
 const store = globStore()
 const { globData,toggleFaviriteOpen,getPromptObj } = store
 
@@ -142,6 +145,63 @@ function toggleList() {
   
 }
 
+function backups(){ 
+    if(!favoritesPlist.value.length&&!favoritesPNlist.value.length){
+        alert('收藏夹没有数据！')
+        return
+    }
+    let data = {fp:favoritesPlist.value,fnp:favoritesPNlist.value};
+    let dataString = JSON.stringify(data);
+    let blob = new Blob([dataString], { type: 'application/json' });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = url;
+    link.download = '收藏.txt';
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+function restore() {
+  let input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.txt';
+  // 文件选择改变时的处理函数
+  input.onchange = function(e) {
+    let file = e.target.files[0];
+    if (!file) {
+      alert('没有选择文件');
+      return;
+    }
+    let reader = new FileReader();
+    // 文件读取完成后的回调函数
+    reader.onload = function(e) {
+      let errmsg="不是收藏夹格式文件"
+      try {
+        // 尝试解析文件内容为JSON对象
+        let data = JSON.parse(e.target.result);
+        if(!data.fp||!data.fnp){   
+            throw new Error(errmsg);        
+        }
+        favoritesPlist.value = data.fp || '';
+        favoritesPNlist.value = data.fnp || '';
+        alert('操作成功，记得点击保存！');
+      } catch (error) {
+        console.error('解析JSON字符串时发生错误:', error.message);
+        alert(errmsg);
+      }
+    };
+    // 文件读取出错时的回调函数
+    reader.onerror = function(error) {
+      console.error('读取文件时发生错误:', error);
+      alert('读取文件失败');
+    };
+    // 开始读取文件内容
+    reader.readAsText(file, 'utf-8');
+  };
+
+  // 触发文件选择对话框
+  input.click();
+}
 watchEffect(() => {
     toggleList();
     promptObj.value= getPromptObj()

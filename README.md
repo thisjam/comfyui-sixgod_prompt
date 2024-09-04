@@ -2,14 +2,14 @@
  * @Author: Six_God_K
  * @Date: 2024-04-08 09:37:03
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-05-04 12:50:09
- * @FilePath: \ComfyUI\custom_nodes\comfyui-sixgod_prompt\README.md
+ * @LastEditTime: 2024-09-04 11:13:07
+ * @FilePath: \comfyui-sixgod_prompt\README.md
  * @Description: 
  * 
  * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
 -->
 
-# v1.75
+# v1.76
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，觉得好用的可以给我点颗星 ###
@@ -49,7 +49,7 @@
 1. 安装 llama_cpp_python
 
    * 方式一、参考：https://github.com/abetlen/llama-cpp-python
-   * 方式二、llama-cpp-python的gpu离线包下载地址，自行下载对于版本下载安装
+   * 方式二、(推荐)llama-cpp-python的gpu离线包下载地址，自行下载对于版本下载安装
     	- https://abetlen.github.io/llama-cpp-python/whl/cu121/
     	- https://abetlen.github.io/llama-cpp-python/whl/cu122/
     	- https://abetlen.github.io/llama-cpp-python/whl/cu123/
