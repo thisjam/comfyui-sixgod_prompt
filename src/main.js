@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2024-03-24 15:55:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-05-04 12:18:55
- * @FilePath: \comfyui-sixgod_prompt\src\main.js
+ * @LastEditTime: 2025-02-17 14:12:32
+ * @FilePath: \vue\comfyui-sixgod_prompt\src\main.js
  * @Description: 
  * 
  * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -39,13 +39,5 @@ import draggable from '/src/js/utils/drag.js'
     
  
  
-    // 创建新的link元素
-    const linkElement = document.createElement('link');
-    linkElement.rel = 'stylesheet'; 
-    linkElement.type = 'text/css'; 
-    linkElement.href = './sixgod.css'; 
-    document.head.appendChild(linkElement);
-    
-
-   
+ 
 

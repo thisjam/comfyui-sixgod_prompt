@@ -2,11 +2,10 @@
   <!-- <div class="float" @click="openWindow = true">六</div> -->
   <div class="float"  v-draggable="{ onClick: ()=>openWindow = true }">六</div>
   <div class="mainApp" :data-them="currentThem" v-show="openWindow">
-    <div class="container">
+    <div class="sixgod-container">
       <div class="main-head">
         <div>
           <button @click="syncTextAreaDoms" class="btn">同步数据</button>
-        <!--<button @click="syncTextAreaDoms(false)" class="btn">交换正反同步</button>-->
           <button class="btn" @click="openSetting.isopen = !openSetting.isopen">设置</button>
         </div>
         <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index"
@@ -152,6 +151,7 @@ function getTextAreaDoms() {
 }
 function syncTextAreaDoms() {
   let textareas = document.querySelectorAll('.comfy-multiline-input[placeholder="alt+q 呼出/隐藏 词库面板"]');
+
   if (textareas.length) {
     bindTextAreaDoms(textareas);
     alert("发现【" + textareas.length + "】个文本输入框")
@@ -240,7 +240,7 @@ onMounted(() => {
 .float {
   position: fixed;
   bottom: 50px;
-  left: 50px;
+  left: 150px;
   width: 40px;
   height: 40px;
   background: linear-gradient(90deg, #00c9ff, #92fe9d);

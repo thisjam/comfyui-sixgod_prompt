@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2024-09-03 23:35:43
-FilePath: \ComfyUI\custom_nodes\comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2025-02-17 13:49:02
+FilePath: \vue\comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -21,16 +21,6 @@ import re
 import random
  
  
-current_directory = os.getcwd()
-comfy_path = os.path.dirname(folder_paths.__file__)
-extension_path1 = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt-main')
-extension_path2 = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt')
-extension_path= extension_path1 if os.path.isdir(extension_path1) else extension_path2
-print(extension_path)
-mycss_path = os.path.join(extension_path,'sixgod.css')
-css_path = os.path.join(comfy_path, "web",'sixgod.css')
-shutil.copy(mycss_path, css_path)
-
 try:
     from transerver import Translator,baidu,freebd,llmTranslate,llm
 except:

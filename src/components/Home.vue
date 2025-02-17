@@ -12,7 +12,7 @@
           </PromptTextArea>
         </div>
         <div class="area-right">
-          <div>当前版本v1.76</div>
+          <div>当前版本v1.77</div>
           <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
           <!-- <a target="_blank" href="https://github.com/thisjam/sd-webui-oldsix-prompt">插件教程</a> -->
  
