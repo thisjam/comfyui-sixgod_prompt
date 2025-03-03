@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-02-17 13:49:02
-FilePath: \vue\comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2025-03-03 18:31:44
+FilePath: \vue\comfy_newprompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -47,7 +47,7 @@ class SixGodPrompts:
     def INPUT_TYPES(s):  
        
         return {"required": {
-            "text": ("STRING", {"multiline": True,"placeholder": "alt+q 呼出/隐藏 词库面板"}),
+            "text": ("STRING", {"multiline": True,"placeholder": "双击打开页面"}),
             "clip": ("CLIP",),
             "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),   
         }}
@@ -70,12 +70,13 @@ class SixGodPrompts_Text:
     @classmethod
     def INPUT_TYPES(s):    
         return {"required": {
-            "text": ("STRING", {"multiline": True,"placeholder": "带自动中文翻译功能的文本"}),
+            "text": ("STRING", {"multiline": True,"placeholder": "双击打开页面，带自动中文翻译功能的文本"}),
         }}
     
     RETURN_TYPES = ("STRING",)
     FUNCTION = "encode"
     CATEGORY = "conditioning"
+    # 定义一个encode函数，用于对文本进行编码
     def encode(self, text):
         text=extract_tags(text)
         if(contains_chinese(text)==True):
@@ -178,13 +179,14 @@ def extract_tags(text):
 
 
 
-    
+# 获取JSON数据 
 @server.PromptServer.instance.routes.get("/api/sixgod/getJsonFiles")
 async def getJsonFiles(request):
     josn=LoadTagsFile()
     return web.json_response(josn, content_type='application/json')
 
 
+#测试翻译
 @server.PromptServer.instance.routes.get("/api/sixgod/testTransServer")
 async def testTransServer(request):
     trans_text = translate('苹果')
@@ -194,6 +196,8 @@ async def testTransServer(request):
          trans_text='接口正常'      
     return web.json_response(trans_text, content_type='application/json')
 
+     
+#翻译配置
 @server.PromptServer.instance.routes.post("/api/sixgod/setTransServer")
 async def setTransServer(request):
     post = await request.json()
@@ -205,5 +209,6 @@ async def imaginePrompt(request):
         post = await request.json()
         res=llm.chat_imagine(post,transObj)
         return web.json_response(res, content_type='application/json')
+        # return web.json_response("测试啊", content_type='application/json')
     
  

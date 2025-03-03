@@ -2,14 +2,14 @@
  * @Author: Six_God_K
  * @Date: 2024-04-08 09:37:03
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-09-04 11:13:07
- * @FilePath: \comfyui-sixgod_prompt\README.md
+ * @LastEditTime: 2025-03-03 21:30:21
+ * @FilePath: \vue\comfy_newprompt\README.md
  * @Description: 
  * 
  * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
 -->
 
-# v1.77
+# v2.0.0
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，觉得好用的可以给我点颗星 ###
@@ -36,9 +36,7 @@
 --- 
 ### 使用方法
   *  先在页面上双击搜索six,添加SixGodPrompt节点
-  *  提示词节点的位置在上的是正面，位置在下是负面提示框（节点一个个添加，不要复制）
-  *  alt+q或点击图标打开插件页面，点击绑定数据
-  *  左键输入正向提示框、 右键输入负向提示框
+  *  双击输入框即可打开页面，ESC退出页面
   *  支持自定义词库【把你自己整理词库文件放在yours文件夹下，不受更新会被覆盖影响】
   *  支持中文输入、权重调整、位置调整。Alt+Q键呼出隐藏面板
   *  支持动态随机提示词    本插件专属语法示例：#[red,blue,yellow]
@@ -56,7 +54,7 @@
     	- https://abetlen.github.io/llama-cpp-python/whl/cu124/
 3. 大模型下载（需要.gguf格式）
    * 建议千问大模型，推荐qwen1_5-4b-chat-q2_k.gguf
-   * 地址：https://huggingface.co/Qwen
+   * 千问大模型系列地址：https://huggingface.co/Qwen
      
  ---  
  ### 展示

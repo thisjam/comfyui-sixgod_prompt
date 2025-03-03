@@ -1,6 +1,10 @@
 *[data-them=default]{
     @import './default.scss';
 } 
+
+*[data-them=blue]{
+    @import './blue.scss';
+} 
 *[data-them=green]{
     @import './green.scss';
 } 
@@ -10,13 +14,12 @@
 *[data-them=yellow]{
     @import './yellow.scss';
 } 
-*[data-them=blue]{
-    @import './blue.scss';
-} 
 
+ 
+ 
 
-#six_god_k {
-  
+ 
+#six_god_k { 
     .mainApp{
         position: fixed;
         width: 100%;
@@ -32,12 +35,11 @@
         width: 100%;
         overflow-y: scroll;
         .sixgod-container{
-     
             background-color: var(--body-bg-color);
             color: var(--txt-front-color);
             font-size: var(--base-fontsize);
             min-height: 1200px;
-         
+ 
         }
     }
   }

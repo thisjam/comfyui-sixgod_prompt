@@ -1,277 +1,198 @@
+<!--
+ * @Author: Six_God_K
+ * @Date: 2025-02-22 19:29:19
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2025-03-03 13:56:36
+ * @FilePath: \vue\comfy_newprompt\src\components\PromptRender\PromptTextArea.vue
+ * @Description: 
+ * 
+ * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
+-->
+<!-- 监听提示词 -->
 <template>
-  <div>
-    <div> 
-     <textarea ref="Reftextarea" class="textarea-prompt" v-model="textareaValue"  
-     :placeholder="props.isPositive?`正向提示词 支持中文 Prompt`:`负面提示词 支持中文 Negative Prompt`"  
-     @blur="valiPrompt(props.isPositive,globData.cssList,$event)"></textarea>
+    <div>
+        <textarea  @compositionstart="handleCompositionStart" @compositionend="handleCompositionEnd"
+            @input="handleInput" ref="Reftextarea" class="textarea-prompt sixgod-maintextarea" v-model="textareaValue"
+            @keydown="handleKeydown"  placeholder="支持中文 Prompt"></textarea>
+        {{ textareaPromptsData }}
+
+        <DraggableList v-model:promptlist="promptInfoArr" v-model:textareaDom="Reftextarea"></DraggableList>
     </div>
-    <div class="prompt-list"  >
-        <span v-show="props.list.length" class="expand" @click="isShowPromptList=!isShowPromptList">{{isShowPromptList?'▼':'▲'  }}</span>
-        <Draggable v-show="isShowPromptList" :list="props.list" :textareaDom="Reftextarea" :isPositive="props.isPositive"> </Draggable>    
-    </div>
-  </div>
 </template>
 
-
-
-
 <script setup>
-import { onMounted, ref, defineProps, watch, inject } from 'vue'
-import  Draggable from './Draggable.vue'
-import { globStore } from '@/stores/index.js'
-import romdomJson from '@/randomjson/random1.json';
-const eventBus = inject('eventBus')
+import { nextTick, inject, onMounted, ref, watch } from 'vue'
+import eventBus from '../../utils/eventBus';
+import DraggableList from './DraggableList.vue';
+const textareaPromptsData = ref('')
 
-
-const store = globStore()
-const { globData } = store
-
-const $common = inject('common')
-
-// 自動高度防抖
-const autoHeight = $common.debounce(() => {
-    Reftextarea.value.style.height = 'auto';
-    Reftextarea.value.style.height = `${Reftextarea.value.scrollHeight}px`;
-}, 100);
-
-
-
-const props = defineProps({
-    list:{type:Object,required:true}, //globData.txt_prompt globData.img_prompt
-    syncDom: { type: Object, required: true },
-    isPositive: { type: Boolean, required: true }
-})
-
-
-let textareaValue = ref(null)
+const isComposing = ref(false);
+let textareaValue = ref('')
+let separator = ref('\u200B')
 const Reftextarea = ref(null)
-let  isShowPromptList = ref(true)
- 
+const promptInfoArr = ref([])
+// [{
+//         "active": true,
+//         "state": "enable",
+//         "cn": "简单起手",
+//         "en": "best quality,masterpiece",
+//         "navName": "01起手式",
+//         "id": "25421c78-4038-dfa0-ad09-b49c41de468e",
+//         "w": 1,
+//         "categoryName": "正面起手"
+// }]
 
  
-
-//获取启用的提示词文本
-function getEnablePrompt(arr) {
-  let _en_text = '';
-  let _enableArr = []
-  arr.forEach(element => {
-    if (element.state == 'enable') {
-      _en_text += element.en + ',';
-      _enableArr.push(element)
-    }
-  })
-  return { text: _en_text, arr: _enableArr };
-}
-
- 
-//清空所有正/负面相关样式
-function clearActiveBtnHighLight(isPositive,globCssList,e) {
-  let removecss = isPositive ? 'txt_active' : 'ntxt_active'
-  let addcss = isPositive ? 'ntxt_active' : 'txt_active'
-  let homeEle=e.target.closest('.home')
-  let activeBtns = homeEle.querySelectorAll('.j-string');
- 
-
-  Object.entries(globCssList).forEach(([key, value]) => {
-    globCssList[key] = 0;
-  });
-
-  activeBtns.forEach(itemEle => {
-    if (itemEle.classList.contains('all_active')) {
-      itemEle.classList.remove('all_active')
-      itemEle.classList.add(addcss)
-      globCssList[itemEle.dataset.parenttit]++;
-    }
-    itemEle.classList.remove(removecss)
-    const selector = `.nav-menu [data-tit="${itemEle.dataset.parenttit}"]`;
-    let navelement = homeEle.querySelector(selector);
-    if (globCssList[itemEle.dataset.parenttit] == 0) {
-      navelement.classList.remove('nav-selected')
-    }
-    else {
-      navelement.classList.add('nav-selected')
-    }
-  })
-
- 
-
-}
-
- 
-
-function valiPrompt(isPositive,globCssList,e) {
-  let source_promptarr = props.list;
-  let textarea_text= textareaValue.value
-  if (!textarea_text && source_promptarr.length == 0) {
-    //空文本空数组
-    return
-  };
-  let enable_promptObj = getEnablePrompt(source_promptarr)
-  let prompobj_text = enable_promptObj.text;
-  if (prompobj_text === textarea_text) {
-    return   //提示词文本没有变动
-  }
-  else {
-   
-    if (prompobj_text === textarea_text.substr(0, prompobj_text.length)) {
-      //末尾提示词变化
-       
-      let _newprompt = textarea_text.substr(prompobj_text.length);//截取末尾变动的文本
-      let _newpromptarr = _newprompt.split(',').filter(Boolean);
-      _newpromptarr.forEach(item => {
-        source_promptarr.push({
-          en: item,
-          state: 'enable',
-          cn: item,
-          w: 1
-        })
-      })
-    }
-    else {
-      
-      clearActiveBtnHighLight(isPositive,globCssList,e)
-      let _addnewpromptarr = textarea_text.split(',').filter(Boolean);
-
-      for (let i = source_promptarr.length - 1; i >= 0; i--) {
-        if (source_promptarr[i].state == 'enable') {
-          source_promptarr.splice(i, 1);
-        }
-      }
-      _addnewpromptarr.forEach(item => {
-        source_promptarr.push({
-          en: item,
-          state: 'enable',
-          cn: item,
-          w: 1
-        })
-      })
-
-
-
-    }
-
-
-  }
-
-}
-
-//同步到gradio的文本框
-const syncDomData = $common.debounce(() => {
-    props.syncDom.value = textareaValue.value
-}, 800);
-
-
-watch(
-    () => textareaValue.value,
-    (newValue, oldValue) => {              
-        syncDomData()//同步到comfyui
-        // autoHeight()
-    }
-);
-
- 
-watch(
-  () => props.list,
-  (newValue, oldValue) => {
-    textareaValue.value = getEnablePrompt(newValue).text; 
-  },
-  { deep: true }
-);
-
-async function imaginePrompt(imaginetext) {
- let res=await fetch('api/sixgod/imaginePrompt', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json', 
-    },
-    body: JSON.stringify(imaginetext), 
-  })
- return res
+function handleKeydown(event) {
+    if (event.key !== 'Tab')  return
+    event.preventDefault();
   
+    let arr = textareaValue.value.split(separator.value).filter(item => item.trim() !== "");
+    if (arr.length === promptInfoArr.value.length) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] != promptInfoArr.value[i].en) {
+                break;
+            }
+        }
+    }
+
+    eventBus.emit('deleteAllPrompt')
+    arr = arr.map(item => {
+        return item.replace(/^[,，]+|[,，]+$/g, ""); // 去除开头和结尾的逗号
+    });
+
+    arr.forEach(item => {
+        promptInfoArr.value.push({
+            "active": true,
+            "state": "enable",
+            "cn": item,
+            "en": item,
+            "w": 1,
+        });
+    });
+    // getEnablePrompt();
+
+};
+
+function deleteAllPromptHandle() {
+    promptInfoArr.value = []
+    // getEnablePrompt()
+
+}
+
+// 处理 compositionstart 事件（输入法开始组合输入）
+function handleCompositionStart() {
+    isComposing.value = true;
+}
+
+// 处理 compositionend 事件（输入法结束组合输入）
+function handleCompositionEnd(event) {
+    isComposing.value = false;
+    nextTick(() => {
+        handleInput(event); // 确认输入后执行逻辑
+    });
+}
+function handleInput(event) {
+    if (isComposing.value) return; // 忽略组合输入阶段
+
+    const target = event.target;
+    const oldValue = target.value;
+
+    // 获取光标位置前后的字符
+    const start = target.selectionStart;
+
+    // 检查光标前一个字符是否为中英文逗号
+    if (start > 0 && isComma(oldValue[start - 1])) {
+        const newValue =
+            oldValue.slice(0, start - 1) + // 光标前的部分（去掉最后一个逗号）
+            oldValue[start - 1] + separator.value + // 插入逗号和零宽空格
+            oldValue.slice(start); // 光标后的部分
+
+        if (newValue !== oldValue) {
+            target.value = newValue;
+
+            // 计算光标偏移量
+            const offset = 1; // 零宽空格的长度
+
+            // 设置新光标位置
+            nextTick(() => {
+                target.setSelectionRange(start + offset, start + offset);
+            });
+        }
+    }
+}
+// 判断字符是否为中英文逗号
+function isComma(char) {
+    return char === "," || char === "，"; // 英文逗号或中文逗号
+}
+function getEnablePrompt() {
+    const items = promptInfoArr.value; // 缓存数组
+    const sep = separator.value; // 缓存分隔符
+    const enabledItems = items.filter(item => item.state === 'enable');
+    const en_text = enabledItems.map(item => item.en).join(sep + ',');
+    textareaValue.value = en_text;
 }
 
 
+function InputPromptHandle(data) {
+    const existingItemIndex = promptInfoArr.value.findIndex(item => item.id === data.id);
+    if (existingItemIndex !== -1) {
+        promptInfoArr.value.splice(existingItemIndex, 1);
+    } else {
+        promptInfoArr.value.push(data);
+    }
+    // getEnablePrompt();
+}
+
+watch(
+    () => [...promptInfoArr.value], // 深拷贝数组以确保监听到内部变化
+    (newValue, oldValue) => {
+        getEnablePrompt();
+    },
+    { deep: true } // 开启深度监听
+);
 onMounted(() => {
-  //初始同步comfyui节点输入框
-  eventBus.on('loadTextArea',function(arr){
-    textareaValue.value=props.isPositive?arr[0]:arr[1]
-  })
-  //不通用部分
-  eventBus.on('autoTips',function(tempPrompt){
-      if (props.isPositive) {
-        textareaValue.value = tempPrompt
-        props.list.push({ en: tempPrompt.en, state: 'enable', cn: tempPrompt.cn, w: 1 })
-      }
-       
-  })
-  eventBus.on('suji_prompt',async(text,placeholderPrompts)=>{  
-     if(props.isPositive){ 
-      if(text){
-        globData.is_suiji_loading=true
-        let res= await imaginePrompt(text)
-        let Prompt=await res.json()
-        textareaValue.value=placeholderPrompts.start+Prompt+placeholderPrompts.end
-        globData.is_suiji_loading=false
-      }
-      else{
-        let randomIndex = Math.floor(Math.random() *romdomJson.length);
-        let random_cn=romdomJson[randomIndex].key
-        textareaValue.value=placeholderPrompts.start+random_cn+placeholderPrompts.end
-      }
-     
-          
-     }
-   
-  })
+    eventBus.on('InputPrompt', (data) => {
+        InputPromptHandle(data);
+    })
+    eventBus.on("deleteAllPrompt", () => {
+        deleteAllPromptHandle()
+    })
+    eventBus.on("closeUI", () => {
+        eventBus.emit('updatePrompt', { txt: textareaValue.value, promptInfo: promptInfoArr.value });
+    })
+    eventBus.on("loadTextareaData", (data) => {
+        promptInfoArr.value = data.promptInfo
+
+
+    })
 })
 </script>
 
 <style lang="scss" scoped>
+textarea {
+    width: 100%;
+    min-height: 6em;
+    max-height: 10em;
+    border-radius: 5px;
+    background: var(--textarea-prompt-bg-color);
+    border: 1px solid var(--textarea-prompt-border-color);
+    font-size: 1em;
+    color: inherit;
+    box-sizing: border-box;
+    line-height: 1.3em;
+    padding: 10px;
 
- textarea {
-  width: 100%;
-  min-height: 6em;
-  max-height: 10em;
-  border-radius: 5px;
-  background: var(--textarea-prompt-bg-color);
-  border: 1px  solid var(--textarea-prompt-border-color);
-  font-size: 1em;
-  color: inherit;
-  box-sizing: border-box;
-  line-height: 1em;
-  padding: 10px;
- 
- 
-  
 }
 
- textarea:focus {
-  outline: none;
-  border: 1px solid var(--textarea-prompt-focus-border-color);
+textarea:focus {
+    outline: none;
+    border: 1px solid var(--textarea-prompt-focus-border-color);
 
 }
 
 .textarea-prompt {
-  resize: none;
-  // overflow: hidden;
-  margin: .5em 0;
+    resize: none;
+    margin: .5em 0;
 }
-
-.prompt-list {
-  display: flex;
-  // min-height: 70px;
-  position: relative;
-  width: 100%;
-  .expand{
-    position: absolute;
-    right: 0;
-    top: -1em;
-    font-size: 1em;
-    cursor: pointer;
-
-  }
- 
-}
-
-
 </style>

@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-23 22:30:05
 LastEditors: Six_God_K
-LastEditTime: 2024-05-04 12:06:20
-FilePath: \comfyui-sixgod_prompt\transerver\llm.py
+LastEditTime: 2025-03-03 19:31:45
+FilePath: \vue\comfy_newprompt\transerver\llm.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -51,13 +51,14 @@ Copyright (c) 2024 by ${git_name_email}, All Rights Reserved.
 import time
 import os
 import folder_paths
-import random
-
+from pathlib import Path
 # from llama_cpp import Llama
 try:
       from llama_cpp import Llama
-      comfy_path = os.path.dirname(folder_paths.__file__)
-      extension_path = os.path.join(comfy_path, 'custom_nodes','comfyui-sixgod_prompt','models')
+      extension_path=Path(__file__).resolve().parent.parent / 'models'
+      print('---------------------------------------------------')
+      print(extension_path)
+      print('---------------------------------------------------')
       def chat(question,**kwargs):
         llm = Llama(
             model_path=os.path.join(extension_path,kwargs['llmName'])+'.gguf',

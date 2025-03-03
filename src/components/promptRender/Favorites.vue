@@ -1,115 +1,109 @@
+<!--
+ * @Author: Six_God_K
+ * @Date: 2025-02-27 11:18:33
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2025-03-03 21:28:02
+ * @FilePath: \vue\comfy_newprompt\src\components\PromptRender\Favorites.vue
+ * @Description: 
+ * 
+ * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
+-->
 <template>
-
-    <Dialog class="favorites"  @closeDialog="closeDialog" v-if="globData.isFaviriteOpen" >
-        <template v-slot:head>
-            <div>
-                <label @click="isPositive = !isPositive" :class="isPositive ? 'active' : ''">正面收藏夹</label>
-                <label @click="isPositive = !isPositive" :class="!isPositive ? 'active' : ''">负面收藏夹</label>
-            </div>
-            <div>
-                <button class="btn" @click="addPromptToFavorites(0, $event)">收藏当前正面</button>
-                <button class="btn" @click="addPromptToFavorites(1, $event)">收藏当前负面</button>
-                <button class="btn" @click="deleteAll">全部删除</button>              
-                <button class="btn" @click="backups">备份收藏</button>
-                <button class="btn" @click="restore">导入收藏</button>
-                <button class="btn" @click="save">保存</button>
-            </div>
-        </template>
-        <template v-slot:content>
-            <div class="prompt-list">
-                <div class="prompt-item" v-for="item, index in sortedList" :key="index" >
-                    <div class="tit">
-                        <input v-show="item.editTitle" type="text" v-model="item.title" @blur="item.editTitle = false">
-                        <div v-show="!item.editTitle" @dblclick="openEditMode(item, true, $event)"> {{ item.title }}
-                        </div>
-                    </div>
-                    <div class="con">
-                        <input v-show="item.editContent" type="text" v-model="item.content"
-                            @blur="item.editContent = false">
-                        <div v-show="!item.editContent" @dblclick="openEditMode(item, false, $event)"> {{
-                    item.content }}
-                        </div>
-                    </div>
-                    <div class="opera">
-                        <button @click="inputToJSonList(item)">导</button>
-                        <button @click="SetorderIndex(index,item)">排</button>
-                        <button @click="deleteItem(index)">删</button>        
-                    </div>
+    <div>
+        <button class="btn" @click="isshow = !isshow">收藏夹</button>
+        <Dialog class="favorites" v-model="isshow">
+            <template v-slot:head>
+                <div>收藏夹</div>
+                <div><input v-model="searchWord" type="text" @keydown.enter="search">
+                    <button @click="searchList = []; searchWord = ''">取消</button>
+                    <button @click="search">查找</button>
                 </div>
+                <div>
+                    <button class="btn" @click="addPromptToFavorites">收藏</button>
+                    <button class="btn" @click="deleteAll">全部删除</button>
+                    <button class="btn" @click="isShowCategoryManager = !isShowCategoryManager">分类管理</button>
+                    <button class="btn" @click="backups">备份收藏</button>
+                    <button class="btn" @click="restore">导入收藏</button>
+                    <button class="btn" @click="save">保存</button>
+                </div>
+            </template>
 
-            </div>
+
+            <template v-slot:content>
+                <div class="favorites-list">
+                    <Tabs v-model="activeTabIndex" style="padding: 10px;">
+                        <TabItem v-for="(categor, categorIndex) in categoryList" :index="categorIndex" :key="categor.id"
+                            :title="categor.title">
+                            <template v-for="(item, index) in c_sortedList" :key="index">
+                                <template v-if="item.categoryId == categor.id || categor.id == 666">
+                                    <div class="favorites-item">
+                                        <div class="tit">
+                                            <input v-show="item.editTitle" v-model="item.title"
+                                                @blur="item.editTitle = false">
+                                            <div v-show="!item.editTitle" @dblclick="openEditMode(item, true, $event)">
+                                                {{ item.title }}
+                                            </div>
+                                        </div>
+                                        <div class="con">
+                                            <textarea v-show="item.editContent" v-model="item.content"
+                                                @blur="item.editContent = false">  </textarea>
+                                            <div :title="item.content" v-show="!item.editContent"
+                                                @dblclick="openEditMode(item, false, $event)"> {{
+                                                    item.content }}
+                                            </div>
+
+                                        </div>
+                                        <div class="opera">
+                                            <button class="btn" @click="inputToJSonList(item)">导</button>
+                                            <button class="btn" @click="SetorderIndex(index, item)">排</button>
+                                            <button class="btn" @click="deleteItem(index)">删</button>
+                                        </div>
+                                    </div>
+
+                                </template>
+                            </template>
+                        </TabItem>
+                    </Tabs>
+                </div>
+            </template>
 
 
-        </template>
- 
+        </Dialog>
 
-    </Dialog>
+        <CategoryManager v-model:favoritesPrivewList="favoritesPrivewList" v-model:isshow="isShowCategoryManager"
+            v-model:categoryList="categoryList" title="分类管理" addtitle="添加分类"></CategoryManager>
 
+    </div>
 </template>
 
 <script setup>
-import { onMounted, nextTick, ref, watchEffect,computed } from 'vue'
-import Dialog from "@/components/promptRender/Dialog.vue"
+import { onMounted, nextTick, ref, inject, computed, reactive } from 'vue'
+import Dialog from "./Dialog.vue"
+import eventBus from '../../utils/eventBus'
+import Tabs from './Tabs.vue'
+import TabItem from './TabItem.vue'
+import CategoryManager from './CategoryManager.vue'
+const common = inject('common')
+const isshow = ref(false)
+const isShowCategoryManager = ref(false)
+const searchWord = ref('')
+const activeTabIndex = ref(0)
+// const tempData = {
+//     title: 'title',
+//     content: 'content',
+//     orderIndex: 0,
+//     editTitle: false,
+//     editContent: false
+// }
+const favoritesPrivewList = ref([])
+const categoryList = ref([])
+const searchList = ref([])
 
-import { globStore } from '@/stores/index.js'
-
-const store = globStore()
-const { globData,toggleFaviriteOpen,getPromptObj } = store
-
-let isPositive = ref(true);
-let favoritesPrivewList = ref([])
-let favoritesPlist = ref([])
-let favoritesPNlist = ref([])
-let promptObj = ref(null)
-
-
-const sortedList = computed(() => {
-      return favoritesPrivewList.value.sort((a, b) => b.orderIndex - a.orderIndex);
- });
- 
-
-function closeDialog() {
-    toggleFaviriteOpen()
-}
-
-
-function inputToJSonList(item) {
-     let arrjson=isPositive.value ? promptObj.value.txt:promptObj.value.ntxt
-     arrjson.push({ cn: item.title, en: item.content, state: 'enable', w: 1 })
-    // let homeEle = e.target.closest('.home');
-    // let textareaEle = homeEle.querySelectorAll('.textarea-prompt')[0];  
-}
-
-function addPromptToFavorites(textareaIndex, e) {
-    let homeEle = e.target.closest('.home');
-    let textareaEle = homeEle.querySelectorAll('.textarea-prompt')[textareaIndex];
-    if (!textareaEle || !textareaEle.value) return
-    let userInput = window.prompt("请输入标题:", "");
-    let arr = textareaIndex == '1' ? favoritesPNlist.value : favoritesPlist.value;
-    if (userInput !== null) {
-        arr.push({
-            title: userInput,
-            content: textareaEle.value,
-            orderIndex: 0,
-            editTitle: false,
-            editContent: false
-        })
-
-    }
-
-}
+// function needCategory() {
+//     eventBus.emit('needCategory')
+// }
 
 
-function SetorderIndex(index,item) {
-   
-    let userInput = window.prompt("请输入一个排序数字，越大越靠前", item.orderIndex);
-    let number=Number(userInput)
-    if(number){
-         favoritesPrivewList.value[index].orderIndex =number
-   
-    }
-   
-}
 
 function openEditMode(item, istit, event) {
     istit ? item.editTitle = true : item.editContent = true
@@ -117,6 +111,41 @@ function openEditMode(item, istit, event) {
         event.target.previousElementSibling.focus();
     });
 }
+
+
+
+
+function SetorderIndex(index, item) {
+    let userInput = window.prompt("请输入一个排序数字，越大越靠前", item.orderIndex);
+    let number = Number(userInput)
+    if (number) {
+        favoritesPrivewList.value[index].orderIndex = number
+
+    }
+}
+
+
+function inputToJSonList(item) {
+
+    let data =
+    {
+        cn: item.title,
+        en: item.content,
+        state: 'enable',
+        w: 1,
+        id: common.getuuid()
+
+    }
+
+    eventBus.emit('InputPrompt', data)
+
+
+}
+
+const c_sortedList = computed(() => {
+    let arr = searchList.value.length ? searchList.value : favoritesPrivewList.value;
+    return arr.sort((a, b) => b.orderIndex - a.orderIndex);
+});
 
 function deleteItem(index) {
     if (confirm('确定要删除吗？')) {
@@ -129,28 +158,12 @@ function deleteAll() {
     }
 }
 
-
-function save() {
-    localStorage.setItem('fp', JSON.stringify(favoritesPlist.value));
-    localStorage.setItem('fnp', JSON.stringify(favoritesPNlist.value));
-    alert('保存成功');
-}
-
-function loadFavorites() {
-    favoritesPlist.value = localStorage.getItem('fp') ? JSON.parse(localStorage.getItem('fp')) : [];
-    favoritesPNlist.value = localStorage.getItem('fnp') ? JSON.parse(localStorage.getItem('fnp')) : [];
-}
-function toggleList() {
-    isPositive.value ? favoritesPrivewList.value = favoritesPlist.value : favoritesPrivewList.value = favoritesPNlist.value;
-  
-}
-
-function backups(){ 
-    if(!favoritesPlist.value.length&&!favoritesPNlist.value.length){
+function backups() {
+    if (!favoritesPrivewList.value.length) {
         alert('收藏夹没有数据！')
         return
     }
-    let data = {fp:favoritesPlist.value,fnp:favoritesPNlist.value};
+    let data = { fp: favoritesPrivewList.value, fcp: categoryList.value };
     let dataString = JSON.stringify(data);
     let blob = new Blob([dataString], { type: 'application/json' });
     let url = URL.createObjectURL(blob);
@@ -162,60 +175,119 @@ function backups(){
 }
 
 function restore() {
-  let input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.txt';
-  // 文件选择改变时的处理函数
-  input.onchange = function(e) {
-    let file = e.target.files[0];
-    if (!file) {
-      alert('没有选择文件');
-      return;
-    }
-    let reader = new FileReader();
-    // 文件读取完成后的回调函数
-    reader.onload = function(e) {
-      let errmsg="不是收藏夹格式文件"
-      try {
-        // 尝试解析文件内容为JSON对象
-        let data = JSON.parse(e.target.result);
-        if(!data.fp||!data.fnp){   
-            throw new Error(errmsg);        
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.txt';
+    // 文件选择改变时的处理函数
+    input.onchange = function (e) {
+        let file = e.target.files[0];
+        if (!file) {
+            alert('没有选择文件');
+            return;
         }
-        favoritesPlist.value = data.fp || '';
-        favoritesPNlist.value = data.fnp || '';
-        alert('操作成功，记得点击保存！');
-      } catch (error) {
-        console.error('解析JSON字符串时发生错误:', error.message);
-        alert(errmsg);
-      }
+        let reader = new FileReader();
+        // 文件读取完成后的回调函数
+        reader.onload = function (e) {
+            let errmsg = "不是收藏夹格式文件"
+            try {
+                // 尝试解析文件内容为JSON对象
+                let data = JSON.parse(e.target.result);
+                if (!data.fp || !data.fcp) {
+                    throw new Error(errmsg);
+                }
+                favoritesPrivewList.value = data.fp;
+                categoryList.value = data.fcp;
+                alert('操作成功，记得点击保存！');
+            } catch (error) {
+                console.error('解析JSON字符串时发生错误:', error.message);
+                alert(errmsg);
+            }
+        };
+        // 文件读取出错时的回调函数
+        reader.onerror = function (error) {
+            console.error('读取文件时发生错误:', error);
+            alert('读取文件失败');
+        };
+        // 开始读取文件内容
+        reader.readAsText(file, 'utf-8');
     };
-    // 文件读取出错时的回调函数
-    reader.onerror = function(error) {
-      console.error('读取文件时发生错误:', error);
-      alert('读取文件失败');
-    };
-    // 开始读取文件内容
-    reader.readAsText(file, 'utf-8');
-  };
 
-  // 触发文件选择对话框
-  input.click();
+    // 触发文件选择对话框
+    input.click();
 }
-watchEffect(() => {
-    toggleList();
-    promptObj.value= getPromptObj()
+
+
+function addPromptToFavorites() {
+
+    let textareaEle = document.querySelector('.sixgod-maintextarea')
+    if (!textareaEle || !textareaEle.value) return
+    let userInput = window.prompt("请输入标题:", "");
+    if (userInput !== null) {
+        favoritesPrivewList.value.push({
+            title: userInput,
+            content: textareaEle.value,
+            orderIndex: 0,
+            editTitle: false,
+            editContent: false,
+            categoryName: categoryList.value[activeTabIndex.value].title,
+            categoryId: categoryList.value[activeTabIndex.value].id
+        })
+
+    }
+
+}
+
+function save() {
+    localStorage.setItem('fp', JSON.stringify(favoritesPrivewList.value));
+    alert('保存成功');
+}
+
+function search() {
+
+    const set = new Set();
+    if (searchWord.value) {
+        let searchTitle = favoritesPrivewList.value.filter(item => item.title.includes(searchWord.value))
+        let searchContent = favoritesPrivewList.value.filter(item => item.content.includes(searchWord.value))
+        searchTitle.forEach(item => set.add(item));
+        searchContent.forEach(item => set.add(item));
+        searchList.value = Array.from(set);
+    } else {
+        searchList.value = [...set]
+    }
+
+}
+const systemCategory = ref({
+    title: '全部',
+    orderIndex: -1,
+    editTitle: false,
+    id: 666,
+
 })
+function loadFavorites() {
+    favoritesPrivewList.value = localStorage.getItem('fp') ? JSON.parse(localStorage.getItem('fp')) : [];
+    categoryList.value = localStorage.getItem('fcp') ? JSON.parse(localStorage.getItem('fcp')) : [];
+    categoryList.value.find((item) => item.id == 666) || categoryList.value.push(systemCategory.value)
+
+}
+
 
 onMounted(() => {
-    loadFavorites();
 
+    loadFavorites();
+    // setTimeout(() => {
+    //     needCategory();
+    // }, 200);
+    // eventBus.on('sendCategory', (arr) => {
+    //     categoryList.value = arr;
+    // })
 
 })
 </script>
 
 <style lang="scss" scoped>
-.favorites {
+.favorites-list {
+    height: 600px;
+    // padding: 100px;
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
@@ -224,6 +296,7 @@ onMounted(() => {
 
     &::-webkit-scrollbar-track {
         background-color: var(--scrollbar-track-bg-color);
+
         /* 设置滚动条轨道的颜色 */
     }
 
@@ -233,75 +306,56 @@ onMounted(() => {
         border-radius: 5px;
 
     }
+}
 
-    label {
-        color: var(--favorite-tags-text-color);
-        margin: 5px;
+
+.favorites-item {
+    box-sizing: border-box;
+    display: grid;
+    align-items: center;
+    align-content: center;
+    grid-template-columns: 2fr 8fr 3fr;
+    padding-block: 10px;
+    padding-inline: 20px;
+
+
+
+    border-bottom: 1px solid var(--favorite-row-bottom-border-color);
+
+    &:hover {
+        background: var(--favorite-row-hover-bg-color);
+    }
+
+    input {
+        width: 80%;
+        height: 30px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 50px;
         font-size: 1em;
-        font-weight: 600;
-        cursor: pointer;
     }
 
-    .active {
-        color: var(--favorite-tags-active-text-color);
+    .con,
+    .tit {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
     }
-    .prompt-list{
-        height: 700px;
+
+    .con div,
+    .tit div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
     }
 
-    .prompt-item {
-        display: grid;
-        align-items: center;
-        align-content: center;
-        grid-template-columns: 2fr 7fr 2fr;
-
-
-        &:hover {
-            background: var(--favorite-row-hover-bg-color);
-        }
-
-        border-bottom: 1px solid var(--favorite-row-bottom-border-color);
-
-        input {
-            width: 100%;
-        }
-
-        .opera {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            button {
-                padding:5px
-            }
-
-        }
-
-        &>div {
-            display: -webkit-box;
-            overflow: hidden;
-            white-space: normal !important;
-            text-overflow: ellipsis;
-            word-wrap: break-word;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            box-sizing: border-box;
-            line-height: 3em;
-            padding: 0 11px;
-            height: 100%;
-
-            div {
-                height: 100%;
-            }
-
-
-        }
-
-
+    .opera {
+        text-align: right;
     }
 
 }
-
 </style>
- 
