@@ -51,6 +51,7 @@ async function llmImagine(imaginetext) {
     })
 
     let resjoson = await res.json()
+
     let sendPrompt = {
         "active": true,
         "state": "enable",
@@ -64,15 +65,15 @@ async function llmImagine(imaginetext) {
 function normalImagine() {
     let randomIndex = Math.floor(Math.random() * imagineJsonData.length);
     let random_cn = imagineJsonData[randomIndex].key
-    let random_en = imagineJsonData[randomIndex].val
+    // let random_en = imagineJsonData[randomIndex].val
     let prompt_cn = startPrompt.value + random_cn + endPrompt.value
-    let prompt_en = startPrompt.value + random_en + endPrompt.value
+    // let prompt_en = startPrompt.value + random_en + endPrompt.value
 
     let sendPrompt = {
         "active": true,
         "state": "enable",
         "cn": prompt_cn,
-        "en": prompt_en,
+        "en": prompt_cn,
         "w": 1,
     }
     return sendPrompt

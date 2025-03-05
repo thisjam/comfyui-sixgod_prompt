@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-03-03 18:31:44
-FilePath: \vue\comfy_newprompt\__init__.py
+LastEditTime: 2025-03-05 19:40:59
+FilePath: \comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -47,7 +47,7 @@ class SixGodPrompts:
     def INPUT_TYPES(s):  
        
         return {"required": {
-            "text": ("STRING", {"multiline": True,"placeholder": "双击打开页面"}),
+            "text": ("STRING", {"multiline": True,"placeholder": "双击（可配置三击）打开页面"}),
             "clip": ("CLIP",),
             "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),   
         }}
@@ -70,7 +70,7 @@ class SixGodPrompts_Text:
     @classmethod
     def INPUT_TYPES(s):    
         return {"required": {
-            "text": ("STRING", {"multiline": True,"placeholder": "双击打开页面，带自动中文翻译功能的文本"}),
+            "text": ("STRING", {"multiline": True,"placeholder": "双击（可配置三击）打开页面，带自动中文翻译功能的文本"}),
         }}
     
     RETURN_TYPES = ("STRING",)
@@ -125,6 +125,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
 
 def translate(text):
+    if(transObj['enable']==False):
+         return text
     if(transObj['server']=='free'):
          trans_server=freebd.FreeBDTranslator()
          return Translator.translate_text(trans_server,text)

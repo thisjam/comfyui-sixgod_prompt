@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-03 18:04:59
- * @FilePath: \vue\comfy_newprompt\src\components\MainApp.vue
+ * @LastEditTime: 2025-03-05 19:04:46
+ * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -54,7 +54,7 @@ const JsonData = ref(null);
 function initializeTextareas() {
     const textareas = document.querySelectorAll('textarea');
     textareas.forEach(textarea => {
-        bindFocusBlurEvents(textarea);
+        addTextareaEvents(textarea);
     });
 }
 
@@ -65,24 +65,99 @@ const c_textareaPromptsList = computed(() => {
     return textareaPromptsList.value.find(item => item.id === currentId.value)
 })
 
-function bindFocusBlurEvents(textarea) {
-    textarea.addEventListener('dblclick', (e) => {
-        if (!e.target.dataset.focusId) {
-            let uid = getuuid();
-            e.target.dataset.focusId = uid;
+
+
+function addTripleClickHandler(element, delay = 500) {
+    let clicks = 0;
+    let timeout;
+
+    element.addEventListener('click', (event) => {
+        clicks++; // 增加点击计数
+
+        if (clicks === 1) {
+            timeout = setTimeout(() => {
+                // 如果在指定延迟内没有达到三次点击，则重置计数器
+                if (clicks < 3) {
+                    clicks = 0;
+                }
+            }, delay);
         }
-        currentId.value = e.target.dataset.focusId;
-        if (!textareaPromptsList.value.find(item => item.id == currentId.value)) {
-            textareaPromptsList.value.push({
-                id: currentId.value,
-                promptInfo: [],
-            })
+
+        if (clicks === 3) {
+            // 清除定时器
+            clearTimeout(timeout);
+            // 执行三击事件处理器
+            // callback.call(this, event);
+            bindFocusBlurEvents(element);
+            // 重置点击计数器
+            clicks = 0;
         }
-        openWindow.value = true;
-        currentTextareaDom.value = e.target;
-        eventBus.emit('loadTextareaData', c_textareaPromptsList.value);
     });
 }
+function addDbClickkHandler(textarea) {
+    textarea.addEventListener('dblclick', (e) => {
+        bindFocusBlurEvents(textarea);
+    });
+}
+
+function bindFocusBlurEvents(textarea) {
+
+    if (!textarea.dataset.focusId) {
+        let uid = getuuid();
+        textarea.dataset.focusId = uid;
+    }
+    currentId.value = textarea.dataset.focusId;
+    if (!textareaPromptsList.value.find(item => item.id == currentId.value)) {
+        textareaPromptsList.value.push({
+            id: currentId.value,
+            promptInfo: textarea.value ? [{
+                "active": true,
+                "state": "enable",
+                "cn": textarea.value,
+                "en": textarea.value,
+                "w": 1,
+            }] : [],
+        })
+        
+    }
+    addBorder(textarea);
+    openWindow.value = true;
+    currentTextareaDom.value = textarea;
+    eventBus.emit('loadTextareaData', c_textareaPromptsList.value);
+
+}
+
+function addBorder(textarea) {
+    let settings = JSON.parse(localStorage.getItem('transObj'));
+    if (settings.isshowBorder)
+        textarea.style.border = `${settings.borderWidth}px solid ${settings.borderColor}`;
+}
+
+function addTextareaEvents(textarea) {
+    setTimeout(() => {
+        if (textareaPromptsList.value.find(item => item.id == textarea.dataset.focusId)) {
+            addBorder(textarea);
+        }
+        let settings = JSON.parse(localStorage.getItem('transObj'))
+        let isdbClick = settings.isdbClick;
+        if (isdbClick) {
+            addDbClickkHandler(textarea);
+        } else {
+            addTripleClickHandler(textarea);
+        }
+
+    }, 200)
+
+
+}
+
+
+
+
+
+
+
+
 //动态注册
 function registerDynimicTextAreaFocus() {
     const observer = new MutationObserver((mutations) => {
@@ -90,7 +165,9 @@ function registerDynimicTextAreaFocus() {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     if (node.tagName.toLowerCase() === 'textarea') {
-                        bindFocusBlurEvents(node); // 为新添加的 textarea 绑定事件
+                        // bindFocusBlurEvents(node); // 为新添加的 textarea 绑定事件
+                        // addTripleClickHandler(node, bindFocusBlurEvents)
+                        addTextareaEvents(node);
                     }
 
                 }

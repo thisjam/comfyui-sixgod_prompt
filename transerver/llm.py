@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-23 22:30:05
 LastEditors: Six_God_K
-LastEditTime: 2025-03-03 19:31:45
-FilePath: \vue\comfy_newprompt\transerver\llm.py
+LastEditTime: 2025-03-03 23:10:27
+FilePath: \comfyui-sixgod_prompt\transerver\llm.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -86,13 +86,6 @@ try:
 except Exception as e:
      err_msg='找不到llama_cpp模块'
      print(err_msg)
- 
-
-    
-      
-    
-      
-
  
 
 

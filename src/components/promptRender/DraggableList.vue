@@ -5,17 +5,21 @@
         <span v-show="promptlist.length" :class="{ 'expand-rotate': isShowPromptList }" class="expand-btn"
             @click="isShowPromptList = !isShowPromptList">▲</span>
 
+
         <TransitionGroup name="list">
             <template v-for="(item, index) in promptlist" :key="index">
-                <div v-show="isShowPromptList" draggable="true" @dragstart="dragstart" @dragenter="dragenter"
-                    @dragend="dragend" @mouseover="mouseover(item, $event)" @mouseleave="mouseleave" class="drag-item"
-                    :class="item.state" @mousedown="handleMouseDown(item,index,$event)"
+                <!-- @click="editPrompt(index)" 
+                @dblclick="toggleEnableState(item)" -->
+                <div :data-index="index" v-show="isShowPromptList" draggable="true" @dragstart="dragstart"
+                    @dragenter="dragenter" @dragend="dragend" @mouseover="mouseover(item, $event)"
+                    @mouseleave="mouseleave" class="drag-item" :class="item.state"
+                    @mousedown="handleMouseDown(item, index, $event)"
                     @contextmenu.prevent.stop="deletePrompt(index, item, $event)">
                     <div class="word en"> {{ item.en }}</div>
                     <div class="word cn"> {{ item.cn }}</div>
-                    <div class="operation" @click.prevent.stop @dblclick.prevent.stop="">
-                        <div class="add" @click="changeWeight(item, true)">+</div>
-                        <div class="sub" @click="changeWeight(item, false)">-</div>
+                    <div class="operation" @click.prevent.stop>
+                        <div class="add" @click.stop="changeWeight(item, true)">+</div>
+                        <div class="sub" @click.stop="changeWeight(item, false)">-</div>
                     </div>
                 </div>
 
@@ -37,37 +41,47 @@ let refEditTextarea = ref(null)
 let isShowPromptList = ref(true)
 let editText = ref('')
 let editingIndex = ref(-1)
+let isDraging = false
 
 
-const clickTimeout = ref(null);
-const DOUBLE_CLICK_DELAY = 300; // 双击间隔时间（毫秒）
-
+let clickTimeout = ref(null);
+let dragDelayTimeout = null; // 拖拽检测延迟计时器
+const DOUBLE_CLICK_DELAY = 220; // 双击间隔时间（毫秒）
+const DRAG_DELAY = 100; // 拖拽检测延迟计时器
 
 
 function dragstart(e) {
+    isDraging = true;
+    // 清除拖拽检测延迟计时器
+    if (dragDelayTimeout) {
+        clearTimeout(dragDelayTimeout);
+        dragDelayTimeout = null;
+    }
+
     setTimeout(() => {
         e.target.classList.add('draging')
     }, 0);
     currentDom.value = e.target;
-    current_index = getDragItemindex(e.target)
+    current_index = e.target.dataset.index
 
 }
 function dragenter(e) {
     if (e.target == currentDom.value) return
-    target_index = getDragItemindex(e.target);
+    target_index = e.target.dataset.index;
 }
 
 function dragend(e) {
+    isDraging = false;
     e.target.classList.remove('draging')
     swapItems(promptlist.value, current_index, target_index)
 
 }
 
 
-function getDragItemindex(dom) {
-    const children = Array.from(dom.parentNode.children)
-    return children.indexOf(dom) - 1;
-}
+// function getDragItemindex(dom) {
+//     const children = Array.from(dom.parentNode.children)
+//     return children.indexOf(dom);
+// }
 
 function swapItems(arr, i, j) {
     if (i !== j && i >= 0 && j >= 0 && i < arr.length && j < arr.length) {
@@ -135,26 +149,37 @@ function changeWeight(item, isadd) {
 
 
 function deletePrompt(index, item, e) {
-    console.log("deletePrompt---");
-
     eventBus.emit('InputPrompt', item);
 }
 
-function handleMouseDown(item,index,event) {
-    if (event.button === 2) {
-        return; 
-    }
-    if (clickTimeout.value) {
-        // 如果存在未完成的单击计时器，说明是双击
-        clearTimeout(clickTimeout.value);
-        clickTimeout.value = null;
-        editPrompt(index);
 
+function handleMouseDown(item, index, event) {
+    if (event.target.closest('.add') || event.target.closest('.sub')) {
+      return; // 如果是 .add 或 .sub，则不执行后续逻辑
+    }
+    if (event.button === 2) {
+        return;
+    }
+    if (isDraging) return;
+    dragDelayTimeout = setTimeout(() => {
+        if (!isDraging) {
+            // 如果没有发生拖拽，则处理单击事件
+            handleClick(item, index);
+        }
+    }, DRAG_DELAY); // 设置拖拽检测延迟时间（例如 200ms）
+}
+
+function handleClick(item, index) {
+    if (clickTimeout) {
+        // 如果存在未完成的单击计时器，说明是双击
+        clearTimeout(clickTimeout);
+        clickTimeout = null;
+        editPrompt(index);
     } else {
         // 否则启动单击计时器
-        clickTimeout.value = setTimeout(() => {
+        clickTimeout = setTimeout(() => {
             toggleEnableState(item);
-            clickTimeout.value = null;
+            clickTimeout = null;
         }, DOUBLE_CLICK_DELAY);
     }
 }

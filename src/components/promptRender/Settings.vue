@@ -7,9 +7,21 @@
             </template>
             <template v-slot:content>
                 <Tabs style="padding: 10px;" v-model="activeIndex" class="setting-content">
-                    <TabItem title="通用" index="0">
+                    <TabItem title="翻译设置" index="0">
                         <div style="padding: 20px 5px;">
                             <div class="line">
+                                <label>自动翻译</label>
+                                <div>
+                                    <label>
+                                        <input type="radio" :value="true" v-model="transObj.enable" />
+                                        开启自动翻译
+                                    </label>
+
+                                    <label>
+                                        <input type="radio" :value="false" v-model="transObj.enable" />
+                                        关闭自动翻译
+                                    </label>
+                                </div>
                                 <label>服务商</label>
                                 <select v-model="transObj.server">
                                     <option value="free">免费</option>
@@ -42,10 +54,51 @@
 
                         </div>
                     </TabItem>
+                    <TabItem title="快速呼出设置" index="2">
+                        <div class="line" style="padding: 20px 5px;">
+                            <label>快速呼出设置</label>
+                            <div>
+                                <label>
+                                    <input type="radio" :value="true" v-model="transObj.isdbClick" />
+                                    启用鼠标双击呼出界面
+                                </label>
+
+                                <label>
+                                    <input type="radio" :value="false" v-model="transObj.isdbClick" />
+                                    启用鼠标三击呼出界面
+                                </label>
+                            </div>
+                            <label>边框高亮</label>
+                            <div>
+                                <label>
+                                    <input type="radio" :value="true" v-model="transObj.isshowBorder" />
+                                    显示绑定输入框边框颜色高亮
+                                </label>
+
+                                <label>
+                                    <input type="radio" :value="false" v-model="transObj.isshowBorder" />
+                                    隐藏绑定输入框边框颜色高亮
+                                </label>
+                            </div>
+
+                            <label v-show="transObj.isshowBorder">选择一种颜色</label>
+                            <div  v-show="transObj.isshowBorder"> <input type="color" style="margin-right: 10px;" id="colorPicker" v-model="transObj.borderColor">{{
+                                transObj.borderColor }}</div>
+
+                            <label  v-show="transObj.isshowBorder">边框大小</label>
+                            <div  v-show="transObj.isshowBorder"> <input type="range"  style="margin-right: 10px;" id="slider" min="1" max="10" v-model="transObj.borderWidth">{{
+                                transObj.borderWidth }}</div>
+
+                        </div>
+
+                    </TabItem>
+
 
                     <div class="save-setting"><button @click="saveSettings" class="btn">保存配置</button></div>
                 </Tabs>
+
             </template>
+
         </Dialog>
 
     </div>
@@ -60,7 +113,13 @@ import Tabs from './Tabs.vue';
 const isshow = ref(false)
 const activeIndex = ref(0)
 const txt_test_trans = ref('')
+
 const transObj = ref({
+    enable: true,
+    isdbClick: true,
+    borderColor: '#1dcb10',
+    borderWidth: 1,
+    isshowBorder: true,
     server: 'free',
     appid: '',
     secret: '',
@@ -71,6 +130,8 @@ const transObj = ref({
 })
 
 function saveSettings(istips = true) {
+    console.log(transObj.value);
+
     localStorage.setItem('transObj', JSON.stringify(transObj.value))
     setTransServer()
     istips && alert('保存成功')
@@ -95,9 +156,9 @@ function testTransServer() {
     fetch('api/sixgod/testTransServer').then(res => res.json()).then(data => {
         txt_test_trans.value = data
     }).catch(error => {
-            // 捕获所有错误（包括网络错误和 HTTP 错误）
-            txt_test_trans.value = '翻译失败';
-     });
+        // 捕获所有错误（包括网络错误和 HTTP 错误）
+        txt_test_trans.value = '翻译失败';
+    });
 }
 onMounted(() => {
     setTransServer();
@@ -117,7 +178,7 @@ onMounted(() => {
     grid-template-columns: max-content 400px;
     align-items: center;
     text-align: left;
-    gap: 1em;
+    gap: 1.5em;
     font-size: 0.8em;
     margin-bottom: 50px;
 

@@ -2,14 +2,14 @@
  * @Author: Six_God_K
  * @Date: 2024-04-08 09:37:03
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-03 21:30:21
- * @FilePath: \vue\comfy_newprompt\README.md
+ * @LastEditTime: 2025-03-05 16:08:00
+ * @FilePath: \comfyui-sixgod_prompt\README.md
  * @Description: 
  * 
  * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
 -->
 
-# v2.0.0
+# v2.0.1
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，觉得好用的可以给我点颗星 ###
