@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-05 19:04:46
+ * @LastEditTime: 2025-03-06 12:44:25
  * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
@@ -129,8 +129,11 @@ function bindFocusBlurEvents(textarea) {
 
 function addBorder(textarea) {
     let settings = JSON.parse(localStorage.getItem('transObj'));
-    if (settings.isshowBorder)
+    if (settings?.isshowBorder)
         textarea.style.border = `${settings.borderWidth}px solid ${settings.borderColor}`;
+    else{
+        textarea.style.border = `1px solid #1dcb10`;
+    }
 }
 
 function addTextareaEvents(textarea) {
@@ -139,7 +142,7 @@ function addTextareaEvents(textarea) {
             addBorder(textarea);
         }
         let settings = JSON.parse(localStorage.getItem('transObj'))
-        let isdbClick = settings.isdbClick;
+        let isdbClick = settings?.isdbClick||true;
         if (isdbClick) {
             addDbClickkHandler(textarea);
         } else {

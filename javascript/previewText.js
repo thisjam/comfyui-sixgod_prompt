@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2024-09-03 14:00:06
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-02 15:57:15
- * @FilePath: \undefinedg:\ComfyUI_windows_portable_nvidia\ComfyUI_windows_portable\ComfyUI\custom_nodes\comfy_newprompt\javascript\previewText.js
+ * @LastEditTime: 2025-03-06 13:05:21
+ * @FilePath: \comfyui-sixgod_prompt\javascript\previewText.js
  * @Description:
  *
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved.
@@ -16,30 +16,28 @@ import { addStylesheet } from "../../scripts/utils.js";
 // Displays input text on a node
 app.registerExtension({
   name: "sixgod_prompts",
-  async nodeCreated(ComfyNode, ComfyApp) {
-	if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
-		return;
-	  }
-	  const widget = ComfyNode.widgets?.[0];
-	  if (!widget || !widget.element) {
-		return;
-	  }
-	  setTimeout(() => {
-		widget.element.dataset.focusId = ComfyNode.id;
-	  }, 100);
-	 
-   
+   nodeCreated(ComfyNode, ComfyApp) {
+    if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
+      return;
+    }
+    const widget = ComfyNode.widgets?.[0];
+    if (!widget || !widget.element) {
+      return;
+    }
+    setTimeout(() => {
+      widget.element.dataset.focusId = ComfyNode.id;
+    }, 100);
   },
-//   async loadedGraphNode(ComfyNode, ComfyApp) {
-//     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
-//       return;
-//     }
-//     const widget = ComfyNode.widgets?.[0];
-//     if (!widget || !widget.element) {
-//       return;
-//     }
-//     widget.element.dataset.focusId = ComfyNode.id;
-//   },
+  //   async loadedGraphNode(ComfyNode, ComfyApp) {
+  //     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
+  //       return;
+  //     }
+  //     const widget = ComfyNode.widgets?.[0];
+  //     if (!widget || !widget.element) {
+  //       return;
+  //     }
+  //     widget.element.dataset.focusId = ComfyNode.id;
+  //   },
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
     addStylesheet("sixgod.css", import.meta.url);
 
