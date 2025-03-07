@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-06 12:44:25
+ * @LastEditTime: 2025-03-07 22:50:00
  * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
@@ -142,7 +142,8 @@ function addTextareaEvents(textarea) {
             addBorder(textarea);
         }
         let settings = JSON.parse(localStorage.getItem('transObj'))
-        let isdbClick = settings?.isdbClick||true;
+  
+        let isdbClick = (settings?.isdbClick === false) ? false : true;
         if (isdbClick) {
             addDbClickkHandler(textarea);
         } else {

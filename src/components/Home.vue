@@ -16,7 +16,7 @@
         <PromptTextArea></PromptTextArea>
       </div>
       <div class="area-right">
-        <div>当前版本v2.0.2</div>
+        <div>当前版本v2.0.3</div>
         <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
       </div>
     </div>
