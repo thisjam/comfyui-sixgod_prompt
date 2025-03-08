@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-03-05 19:40:59
-FilePath: \comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2025-03-08 22:08:20
+FilePath: \custom_nodes\comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -22,11 +22,12 @@ import random
  
  
 try:
-    from transerver import Translator,baidu,freebd,llmTranslate,llm
+    from transerver import translatorFactory,llm
 except:
     transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
     sys.path.append(transerver_path)
-    import Translator,baidu,freebd,llmTranslate,llm
+    import translatorFactory,llm
+
  
 
 
@@ -60,7 +61,7 @@ class SixGodPrompts:
     def encode(self, clip, text,seed):
         text=extract_tags(text)
         if(contains_chinese(text)==True):
-           text=translate(text)
+           text=translate_to_zh(text)
         tokens = clip.tokenize(text)
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         return ([[cond, {"pooled_output": pooled}]],text,seed)
@@ -78,9 +79,9 @@ class SixGodPrompts_Text:
     CATEGORY = "conditioning"
     # 定义一个encode函数，用于对文本进行编码
     def encode(self, text):
-        text=extract_tags(text)
-        if(contains_chinese(text)==True):
-           text=translate(text)
+        text=extract_tags(text) 
+        if(contains_chinese(text)==True):        
+           text=translate_to_zh(text)
         return (text,)
  
 class SixGodPrompts_PreivewText:
@@ -124,18 +125,18 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 
-def translate(text):
-    if(transObj['enable']==False):
-         return text
-    if(transObj['server']=='free'):
-         trans_server=freebd.FreeBDTranslator()
-         return Translator.translate_text(trans_server,text)
-    elif(transObj['server']=='llm'):
-         trans_server=llmTranslate.LLMTranslator()
-         return Translator.translate_text(trans_server,text,transObj)
-    elif(transObj['server']=='baidu'):
-         trans_server=baidu.BaiduTranslator()
-         return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
+# def translate(text):
+#     if(transObj['enable']==False):
+#          return text
+#     if(transObj['server']=='free'):
+#          trans_server=freebd.FreeBDTranslator()
+#          return Translator.translate_text(trans_server,text)
+#     elif(transObj['server']=='llm'):
+#          trans_server=llmTranslate.LLMTranslator()
+#          return Translator.translate_text(trans_server,text,transObj)
+#     elif(transObj['server']=='baidu'):
+#          trans_server=baidu.BaiduTranslator()
+#          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
   
      
 
@@ -177,7 +178,24 @@ def extract_tags(text):
     return text
     
 
-
+def translate(text,lang_from="auto",lang_to="en"):
+    transObj['lang_from']=lang_from
+    transObj['lang_to']=lang_to
+    translator= translatorFactory.TranslatorFactory.create_translator(transObj['server'])
+    trans_text =translator.translate(text,**transObj)
+    return trans_text
+def auto_translate(text):
+    if(contains_chinese(text)==True):
+         from_lang='zh'
+         to_lang='en'
+    else:
+         from_lang='en'
+         to_lang='zh'
+    return  (from_lang,translate(text,lang_to=to_lang))
+def translate_to_zh(text):
+    if(transObj['enable']==False):
+        return text
+    return translate(text,lang_to="zh")
 
 
 
@@ -191,7 +209,7 @@ async def getJsonFiles(request):
 #测试翻译
 @server.PromptServer.instance.routes.get("/api/sixgod/testTransServer")
 async def testTransServer(request):
-    trans_text = translate('苹果')
+    trans_text =translate('苹果')
     if (trans_text.lower()!='apple'):
          trans_text='翻译失败'
     else:
@@ -211,6 +229,14 @@ async def imaginePrompt(request):
         post = await request.json()
         res=llm.chat_imagine(post,transObj)
         return web.json_response(res, content_type='application/json')
-        # return web.json_response("测试啊", content_type='application/json')
+
+    
+@server.PromptServer.instance.routes.post("/api/sixgod/tanslatePrompt")
+async def tanslatePrompt(request):
+        post = await request.json()  
+        print(post)
+        res=auto_translate(post['text'])
+        return web.json_response(res, content_type='application/json')
+
     
  

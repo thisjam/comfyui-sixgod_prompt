@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-13 12:54:31
 LastEditors: Six_God_K
-LastEditTime: 2024-04-23 22:58:01
-FilePath: \comfyui-sixgod_prompt\transerver\baidu.py
+LastEditTime: 2025-03-08 21:18:24
+FilePath: \custom_nodes\comfyui-sixgod_prompt\transerver\baidu.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -11,18 +11,23 @@ Copyright (c) 2024 by ${git_name_email}, All Rights Reserved.
 import Translator 
 import requests
 import json
+import hashlib
 
 class BaiduTranslator(Translator.TranslatorInterface):
-     def translate(self,appid:str,secretKey:str,text: str) -> str:
+     def __init__(self):
+        super().__init__()
+        pass
+    #  def translate(self,appid:str,secretKey:str,text: str) -> str:
+     def translate(self, text: str, **kwargs) -> str:   
         url='https://fanyi-api.baidu.com/api/trans/vip/translate'
        
         postdata={
-            "appid":appid,
-            "from": self.lang_from,
-            "to": self.lang_to,
+            "appid":kwargs['appid'],
+            "from": kwargs.get("lang_from","auto"),
+            "to": kwargs.get("lang_to","en"),
             "q": text,
             "salt": "1435660288",# 随机数
-            "sign":self.encrypt_string_to_md5(appid+text+"1435660288"+secretKey)
+            "sign":self.encrypt_string_to_md5(kwargs['appid']+text+"1435660288"+kwargs['secretKey'])
             }
       
         try:    
@@ -36,14 +41,20 @@ class BaiduTranslator(Translator.TranslatorInterface):
             
         except requests.exceptions.RequestException as e:
             print(e)
-        
+
+     def encrypt_string_to_md5(self,input_string):
+        encoded_string = input_string.encode()
+        md5_hash = hashlib.md5()
+        md5_hash.update(encoded_string)
+        hashed_value = md5_hash.hexdigest()
+        return hashed_value   
 
 
-if __name__ == '__main__':
-    appid='202406401002012191'
-    secretKey='qKvBIOYoQsiqSm9RjlcGU'
-    text="红色的气球"
-    baidu_translator = BaiduTranslator()
-    res = Translator.translate_text(baidu_translator, appid,secretKey,text)
-    print(res)
+# if __name__ == '__main__':
+#     appid='202406401002012191'
+#     secretKey='qKvBIOYoQsiqSm9RjlcGU'
+#     text="红色的气球"
+#     baidu_translator = BaiduTranslator()
+#     res = Translator.translate_text(baidu_translator, appid,secretKey,text)
+#     print(res)
             

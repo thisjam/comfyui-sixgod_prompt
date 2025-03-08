@@ -55,9 +55,10 @@ async function llmImagine(imaginetext) {
     let sendPrompt = {
         "active": true,
         "state": "enable",
-        "cn": resjoson,
         "en": resjoson,
+        "cn": `【${resjoson}】`,
         "w": 1,
+        
     }
     
     return sendPrompt
@@ -74,7 +75,7 @@ function normalImagine() {
         "state": "enable",
         "cn": prompt_cn,
         "en": prompt_cn,
-        "w": 1,
+        "w": 1 
     }
     return sendPrompt
 }

@@ -56,7 +56,7 @@
                     </TabItem>
                     <TabItem title="快速呼出设置" index="2">
                         <div class="line" style="padding: 20px 5px;">
-                            <label>快速呼出设置</label>
+                            <label>鼠标呼出设置</label>
                             <div>
                                 <label>
                                     <input type="radio" :value="true" v-model="transObj.isdbClick" />
@@ -67,6 +67,21 @@
                                     <input type="radio" :value="false" v-model="transObj.isdbClick" />
                                     启用鼠标三击呼出界面
                                 </label>
+                            </div>
+                            <label>键盘呼出设置</label>
+                            <div>
+                                <span style="margin-right: 10px;">
+                                    <label for="">按键1:</label>
+                                    <select name="firstKey" v-model="transObj.firstKey">
+                                        <option value=""></option>
+                                        <option value="alt" selected>alt</option>
+                                        <option value="ctrl">ctrl</option>
+                                        <option value="commond">commond</option>
+                                        <option value="shift">shift</option>
+                                    </select>
+                                </span>
+                                <span> <label for="">按键2</label> <input type="text" v-model="transObj.secondKey">
+                                </span>
                             </div>
                             <label>边框高亮</label>
                             <div>
@@ -82,12 +97,14 @@
                             </div>
 
                             <label v-show="transObj.isshowBorder">选择一种颜色</label>
-                            <div  v-show="transObj.isshowBorder"> <input type="color" style="margin-right: 10px;" id="colorPicker" v-model="transObj.borderColor">{{
-                                transObj.borderColor }}</div>
+                            <div v-show="transObj.isshowBorder"> <input type="color" style="margin-right: 10px;"
+                                    id="colorPicker" v-model="transObj.borderColor">{{
+                                        transObj.borderColor }}</div>
 
-                            <label  v-show="transObj.isshowBorder">边框大小</label>
-                            <div  v-show="transObj.isshowBorder"> <input type="range"  style="margin-right: 10px;" id="slider" min="1" max="10" v-model="transObj.borderWidth">{{
-                                transObj.borderWidth }}</div>
+                            <label v-show="transObj.isshowBorder">边框大小</label>
+                            <div v-show="transObj.isshowBorder"> <input type="range" style="margin-right: 10px;"
+                                    id="slider" min="1" max="10" v-model="transObj.borderWidth">{{
+                                        transObj.borderWidth }}</div>
 
                         </div>
 
@@ -105,16 +122,20 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, provide,computed } from 'vue'
 import Dialog from './Dialog.vue';
 import TabItem from './TabItem.vue';
 import Tabs from './Tabs.vue';
+import eventBus from '../../utils/eventBus.js'
+
 
 const isshow = ref(false)
 const activeIndex = ref(0)
 const txt_test_trans = ref('')
 
 const transObj = ref({
+    firstKey: 'alt',
+    secondKey: 'q',
     enable: true,
     isdbClick: true,
     borderColor: '#1dcb10',
@@ -126,11 +147,10 @@ const transObj = ref({
     llmName: 'qwen1_5-4b-chat-q2_k',
     n_gpu_layers: -1,
     temperature: 1.2,
-    preset: '你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，用一句话回复我，自定义风格、场景、装饰等，尽量详细，用中文回复'
+    preset: '你是一名中文AI提示词工程师，用提供的关键词想象一副精美的构图，用提示词回复我，自定义风格、场景、装饰等，尽量详细，用中文回复'
 })
 
 function saveSettings(istips = true) {
-    console.log(transObj.value);
 
     localStorage.setItem('transObj', JSON.stringify(transObj.value))
     setTransServer()
@@ -139,8 +159,11 @@ function saveSettings(istips = true) {
 
 function setTransServer() {
     if (localStorage.getItem('transObj')) {
-        transObj.value = JSON.parse(localStorage.getItem('transObj'))
+        let localConfig = JSON.parse(localStorage.getItem('transObj'))
+        transObj.value = { ...transObj.value, ...localConfig }
     }
+    eventBus.emit('loadConfigs', transObj.value)
+ 
     fetch('api/sixgod/setTransServer', {
         method: 'POST',
         headers: {

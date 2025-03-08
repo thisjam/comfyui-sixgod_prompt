@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2024-09-03 14:00:06
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-06 13:05:21
- * @FilePath: \comfyui-sixgod_prompt\javascript\previewText.js
+ * @LastEditTime: 2025-03-08 00:24:31
+ * @FilePath: \custom_nodes\comfyui-sixgod_prompt\javascript\previewText.js
  * @Description:
  *
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved.
@@ -16,7 +16,7 @@ import { addStylesheet } from "../../scripts/utils.js";
 // Displays input text on a node
 app.registerExtension({
   name: "sixgod_prompts",
-   nodeCreated(ComfyNode, ComfyApp) {
+  async nodeCreated(ComfyNode, ComfyApp) {
     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
       return;
     }
@@ -26,7 +26,8 @@ app.registerExtension({
     }
     setTimeout(() => {
       widget.element.dataset.focusId = ComfyNode.id;
-    }, 100);
+      // console.log(widget.element.dataset.focusId);   
+    }, 10);
   },
   //   async loadedGraphNode(ComfyNode, ComfyApp) {
   //     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
@@ -38,8 +39,11 @@ app.registerExtension({
   //     }
   //     widget.element.dataset.focusId = ComfyNode.id;
   //   },
-  async beforeRegisterNodeDef(nodeType, nodeData, app) {
+  init(){
     addStylesheet("sixgod.css", import.meta.url);
+  },
+  async beforeRegisterNodeDef(nodeType, nodeData, app) {
+
 
     if (nodeData.name === "SixGodPrompts_PreivewText") {
       function populate(text) {

@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-07 22:50:00
- * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
+ * @LastEditTime: 2025-03-09 00:06:31
+ * @FilePath: \custom_nodes\comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, provide, computed } from 'vue'
+import { onMounted, ref, provide, computed, inject, reactive } from 'vue'
 import Home from './Home.vue';
 import Settings from './PromptRender/Settings.vue';
 import eventBus from '../utils/eventBus';
@@ -49,6 +49,23 @@ let isDataReady = ref(false);
 const currentTextareaDom = ref(null);
 const textareaPromptsList = ref([]);
 const JsonData = ref(null);
+// const configs = ref(null)
+let configs = reactive({
+    firstKey: 'alt',
+    secondKey: 'q',
+    enable: true,
+    isdbClick: true,
+    borderColor: '#1dcb10',
+    borderWidth: 1,
+    isshowBorder: true,
+    server: 'free',
+    appid: '',
+    secret: '',
+    llmName: 'qwen1_5-4b-chat-q2_k',
+    n_gpu_layers: -1,
+    temperature: 1.2,
+    preset: '你是一名中文AI提示词工程师，用提供的关键词想象一副精美的构图，用提示词回复我，自定义风格、场景、装饰等，尽量详细，用中文回复'
+})
 
 //静态注册
 function initializeTextareas() {
@@ -118,7 +135,7 @@ function bindFocusBlurEvents(textarea) {
                 "w": 1,
             }] : [],
         })
-        
+
     }
     addBorder(textarea);
     openWindow.value = true;
@@ -127,30 +144,22 @@ function bindFocusBlurEvents(textarea) {
 
 }
 
-function addBorder(textarea) {
-    let settings = JSON.parse(localStorage.getItem('transObj'));
-    if (settings?.isshowBorder)
-        textarea.style.border = `${settings.borderWidth}px solid ${settings.borderColor}`;
-    else{
-        textarea.style.border = `1px solid #1dcb10`;
-    }
-}
+
+
 
 function addTextareaEvents(textarea) {
     setTimeout(() => {
         if (textareaPromptsList.value.find(item => item.id == textarea.dataset.focusId)) {
             addBorder(textarea);
         }
-        let settings = JSON.parse(localStorage.getItem('transObj'))
-  
-        let isdbClick = (settings?.isdbClick === false) ? false : true;
+        let isdbClick = configs.isdbClick;
         if (isdbClick) {
             addDbClickkHandler(textarea);
         } else {
             addTripleClickHandler(textarea);
         }
 
-    }, 200)
+    }, 50)
 
 
 }
@@ -169,8 +178,6 @@ function registerDynimicTextAreaFocus() {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     if (node.tagName.toLowerCase() === 'textarea') {
-                        // bindFocusBlurEvents(node); // 为新添加的 textarea 绑定事件
-                        // addTripleClickHandler(node, bindFocusBlurEvents)
                         addTextareaEvents(node);
                     }
 
@@ -211,7 +218,7 @@ function loadJsonFile() {
         const module = importJsonFiles[path]; // 如果使用 eager，这里已经是解析后的模块
         const fileName = path.match(/[^/]+(?=\.json$)/)[0]; // 提取 .json 前的部分
         jsonData[fileName] = module.default;
-        // console.log(`Loaded ${fileName}:`, module.default);
+       
     }
 
     isDataReady.value = true;
@@ -320,17 +327,64 @@ function loadAllPromptsData() {
     localStorage.getItem('six-promptsData') ? textareaPromptsList.value = JSON.parse(localStorage.getItem('six-promptsData')) : textareaPromptsList.value = [];
 
 }
+function initShortCut(event) {
+    let keys = {
+        '': null,
+        'alt': event.altKey,
+        'ctrl': event.ctrlKey,
+        'shift': event.shiftKey,
+        'commond': event.metaKey
+    }
 
-function initEsc() {
-    document.addEventListener('keydown', function (event) {
-        if (event.key.toLowerCase() == 'escape') {
-            closeUI();
+    let _firstKey = keys[configs.firstKey]
+    if (_firstKey) {
+        if (event.key.toLowerCase() == configs.secondKey.toLowerCase()) {
+            if (openWindow.value) {
+                closeUI();
+            }
+            else {
+                openWindow.value = true;
+            }
         }
+    }
+    else if (event.key.toLowerCase() == configs.secondKey.toLowerCase()) {
+        if (!configs.firstKey) {
+            if (openWindow.value) {
+                closeUI();
+            }
+            else {
+                openWindow.value = true;
+            }
+        }
+
+    }
+
+    if (event.key.toLowerCase() == 'escape') {
+        closeUI();
+    }
+}
+
+function addBorder(textarea) {
+    if (configs.isshowBorder)
+        textarea.style.border = `${configs.borderWidth}px solid ${configs.borderColor}`;
+ 
+
+}
+
+function loadConfigsHandle() {
+    if (localStorage.getItem('transObj')) {
+        let localConfig = JSON.parse(localStorage.getItem('transObj'))
+        configs = { ...configs, ...localConfig }
+         
+    }
+    document.addEventListener('keydown', function (event) {
+        initShortCut(event);
     })
 }
+
 onMounted(() => {
     currentThem.value = window.localStorage.getItem('currentThem') || 'default'
-    initEsc();
+    loadConfigsHandle();
     loadAllPromptsData();
     initializeTextareas();
     registerDynimicTextAreaFocus();
@@ -339,9 +393,11 @@ onMounted(() => {
     eventBus.on('updatePrompt', (data) => {
         if (currentTextareaDom.value) {
             currentTextareaDom.value.value = data.txt;
+
+            textareaPromptsList.value.find(item => item.id == currentId.value).promptInfo = data.promptInfo;
+            saveAllPromptsData();
         }
-        textareaPromptsList.value.find(item => item.id == currentId.value).promptInfo = data.promptInfo;
-        saveAllPromptsData();
+
     })
     eventBus.on("deleteAllPrompt", () => {
         textareaPromptsList.value.find(item => item.id == currentId.value).promptInfo = [];

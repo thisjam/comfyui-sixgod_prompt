@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-13 15:23:00
 LastEditors: Six_God_K
-LastEditTime: 2024-04-23 22:53:58
-FilePath: \comfyui-sixgod_prompt\transerver\freebd.py
+LastEditTime: 2025-03-08 19:29:16
+FilePath: \custom_nodes\comfyui-sixgod_prompt\transerver\freebd.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -13,11 +13,14 @@ import requests
 import json
 
 class FreeBDTranslator(Translator.TranslatorInterface):
-    def translate(self,text) -> str:  
+    def __init__(self):
+        super().__init__()
+        pass
+    def translate(self, text: str, **kwargs) -> str:
         url='https://fanyi.baidu.com/transapi'   
         postdata={
-            "from": self.lang_from,
-            "to": self.lang_to,
+            "from": kwargs.get("lang_from","auto"),
+            "to": kwargs.get("lang_to","en"),
             "query": text,
             "source": "txt",
         }
@@ -51,9 +54,4 @@ class FreeBDTranslator(Translator.TranslatorInterface):
        
 
 
-if __name__ == '__main__':
-    text="一个女孩在雨中行走"
-    baidu_translator = FreeBDTranslator()
-    res = Translator.translate_text(baidu_translator,text)
-    print(res)
-        
+ 

@@ -19,8 +19,9 @@
                     <div class="word cn"> {{ item.cn }}</div>
                     <div class="operation" @click.prevent.stop>
                         <div class="add" @click.stop="changeWeight(item, true)">+</div>
-                        <div class="sub" @click.stop="changeWeight(item, false)">-</div>
+                        <div class="sub" @click.stop="changeWeight(item, false)">-</div>                
                     </div>
+                   
                 </div>
 
             </template>
@@ -31,6 +32,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import eventBus from '../../utils/eventBus';
+// import Tanslator from '@/icons/Tanslator.vue';
 
 const promptlist = defineModel('promptlist', { required: true });
 const textareaDom = defineModel('textareaDom', { required: true });
@@ -266,6 +268,7 @@ textarea:focus {
         width: 1.2em;
         opacity: 0;
         transition: opacity 0.1s ease-in-out;
+        // border: 1px solid red;
         /* 添加过渡效果 */
 
 

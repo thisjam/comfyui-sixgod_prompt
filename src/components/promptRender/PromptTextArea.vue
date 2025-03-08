@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:29:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-03 13:56:36
- * @FilePath: \vue\comfy_newprompt\src\components\PromptRender\PromptTextArea.vue
+ * @LastEditTime: 2025-03-08 23:21:08
+ * @FilePath: \custom_nodes\comfyui-sixgod_prompt\src\components\promptRender\PromptTextArea.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -11,23 +11,33 @@
 <!-- 监听提示词 -->
 <template>
     <div>
-        <textarea  @compositionstart="handleCompositionStart" @compositionend="handleCompositionEnd"
-            @input="handleInput" ref="Reftextarea" class="textarea-prompt sixgod-maintextarea" v-model="textareaValue"
-            @keydown="handleKeydown"  placeholder="支持中文 Prompt"></textarea>
+        <textarea @compositionstart="handleCompositionStart" @compositionend="handleCompositionEnd" @input="handleInput"
+            ref="Reftextarea" class="textarea-prompt sixgod-maintextarea" v-model="textareaValue"
+            @keydown="handleKeydown" placeholder="支持中文 Prompt"></textarea>
         {{ textareaPromptsData }}
 
-        <DraggableList v-model:promptlist="promptInfoArr" v-model:textareaDom="Reftextarea"></DraggableList>
+
+        <DraggableList style="margin-bottom: 20px;" v-model:promptlist="promptInfoArr" v-model:textareaDom="Reftextarea"></DraggableList>
+        <div v-show="textareaPreValue" class="preivew-translate">
+            {{ textareaPreValue }}
+        </div>
+        <button @click="textareaPreValue = ''">清空预览框</button>
+        <button @click="translateAll">一键翻译</button>
+        
     </div>
+
 </template>
 
 <script setup>
 import { nextTick, inject, onMounted, ref, watch } from 'vue'
 import eventBus from '../../utils/eventBus';
 import DraggableList from './DraggableList.vue';
+
 const textareaPromptsData = ref('')
 
 const isComposing = ref(false);
 let textareaValue = ref('')
+let textareaPreValue = ref('')
 let separator = ref('\u200B')
 const Reftextarea = ref(null)
 const promptInfoArr = ref([])
@@ -42,11 +52,14 @@ const promptInfoArr = ref([])
 //         "categoryName": "正面起手"
 // }]
 
- 
+
+
+
+
 function handleKeydown(event) {
-    if (event.key !== 'Tab')  return
+    if (event.key !== 'Tab') return
     event.preventDefault();
-  
+
     let arr = textareaValue.value.split(separator.value).filter(item => item.trim() !== "");
     if (arr.length === promptInfoArr.value.length) {
         for (let i = 0; i < arr.length; i++) {
@@ -134,14 +147,46 @@ function getEnablePrompt() {
 }
 
 
-function InputPromptHandle(data) {
+async function translate(text) {
+    const response = await fetch('api/sixgod/tanslatePrompt', { // 注意：'tanslatePrompt' 可能是一个拼写错误
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }), // 假设后端期望的对象结构为 {text: "要翻译的文本"}
+    });
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const responseData = await response.json(); // 解析 JSON 数据
+    return responseData; // 返回解析后的数据
+}
+async function translateAll() {
+    if (!textareaValue.value) return
+    let res = await translate(textareaValue.value)
+    textareaPreValue.value = res[1]
+
+}
+async function InputPromptHandle(data) {
+
     const existingItemIndex = promptInfoArr.value.findIndex(item => item.id === data.id);
     if (existingItemIndex !== -1) {
         promptInfoArr.value.splice(existingItemIndex, 1);
     } else {
+
+        if (data.cn == data.en) {
+            try {
+                let [lang, text] = await translate(data.cn);
+                lang == 'zh' ? data.en = text : data.cn = text;
+
+            } catch (error) {
+                console.error('翻译失败:', error);
+            }
+
+        }
         promptInfoArr.value.push(data);
     }
-    // getEnablePrompt();
+
 }
 
 watch(
@@ -163,6 +208,7 @@ onMounted(() => {
     })
     eventBus.on("loadTextareaData", (data) => {
         promptInfoArr.value = data.promptInfo
+        textareaPreValue.value=''
 
 
     })
@@ -195,4 +241,15 @@ textarea:focus {
     resize: none;
     margin: .5em 0;
 }
+
+.preivew-translate{
+    background: var(--textarea-prompt-bg-color);
+    border-radius: 5px;
+    border: 1px solid var(--textarea-prompt-border-color);
+    padding: 10px;
+    margin-bottom: 20px;
+    min-height: 2em;
+}
+
+ 
 </style>

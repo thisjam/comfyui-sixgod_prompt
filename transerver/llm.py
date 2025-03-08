@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-23 22:30:05
 LastEditors: Six_God_K
-LastEditTime: 2025-03-03 23:10:27
-FilePath: \comfyui-sixgod_prompt\transerver\llm.py
+LastEditTime: 2025-03-08 22:25:03
+FilePath: \custom_nodes\comfyui-sixgod_prompt\transerver\llm.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -56,14 +56,12 @@ from pathlib import Path
 try:
       from llama_cpp import Llama
       extension_path=Path(__file__).resolve().parent.parent / 'models'
-      print('---------------------------------------------------')
-      print(extension_path)
-      print('---------------------------------------------------')
       def chat(question,**kwargs):
         llm = Llama(
             model_path=os.path.join(extension_path,kwargs['llmName'])+'.gguf',
             n_gpu_layers=int(kwargs['n_gpu_layers']),
         )
+ 
         res=llm.create_chat_completion(
             messages = [
                 {"role": "system", "content":kwargs['preset']},
@@ -90,17 +88,17 @@ except Exception as e:
 
 
 
-if __name__ == '__main__':
-        start_time = time.time()
-        question='一个美女'
-        modelName="qwen1_5-4b-chat-q2_k"
-        Preset=f'你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
-        res= chat(question,modelName,Preset)
-        end_time = time.time()
-        run_time = end_time - start_time
-        print(run_time)
-        print(res)
-        pass
+# if __name__ == '__main__':
+#         start_time = time.time()
+#         question='一个美女'
+#         modelName="qwen1_5-4b-chat-q2_k"
+#         Preset=f'你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
+#         res= chat(question,modelName,Preset)
+#         end_time = time.time()
+#         run_time = end_time - start_time
+#         print(run_time)
+#         print(res)
+#         pass
  
     
  
