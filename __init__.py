@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-03-08 22:08:20
-FilePath: \custom_nodes\comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2025-03-09 14:33:52
+FilePath: \comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -61,7 +61,7 @@ class SixGodPrompts:
     def encode(self, clip, text,seed):
         text=extract_tags(text)
         if(contains_chinese(text)==True):
-           text=translate_to_zh(text)
+           text=translate_to_en(text)
         tokens = clip.tokenize(text)
         cond, pooled = clip.encode_from_tokens(tokens, return_pooled=True)
         return ([[cond, {"pooled_output": pooled}]],text,seed)
@@ -81,7 +81,7 @@ class SixGodPrompts_Text:
     def encode(self, text):
         text=extract_tags(text) 
         if(contains_chinese(text)==True):        
-           text=translate_to_zh(text)
+           text=translate_to_en(text)
         return (text,)
  
 class SixGodPrompts_PreivewText:
@@ -192,10 +192,10 @@ def auto_translate(text):
          from_lang='en'
          to_lang='zh'
     return  (from_lang,translate(text,lang_to=to_lang))
-def translate_to_zh(text):
+def translate_to_en(text):
     if(transObj['enable']==False):
         return text
-    return translate(text,lang_to="zh")
+    return translate(text,lang_to="en")
 
 
 
