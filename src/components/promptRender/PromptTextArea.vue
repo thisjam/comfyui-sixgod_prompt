@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:29:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-08 23:21:08
- * @FilePath: \custom_nodes\comfyui-sixgod_prompt\src\components\promptRender\PromptTextArea.vue
+ * @LastEditTime: 2025-03-09 13:40:04
+ * @FilePath: \comfyui-sixgod_prompt\src\components\promptRender\PromptTextArea.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -22,7 +22,7 @@
             {{ textareaPreValue }}
         </div>
         <button @click="textareaPreValue = ''">清空预览框</button>
-        <button @click="translateAll">一键翻译</button>
+        <button @click="translateAll">一键预览翻译</button>
         
     </div>
 

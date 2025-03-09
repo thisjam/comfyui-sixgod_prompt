@@ -16,7 +16,7 @@
                     @mousedown="handleMouseDown(item, index, $event)"
                     @contextmenu.prevent.stop="deletePrompt(index, item, $event)">
                     <div class="word en"> {{ item.en }}</div>
-                    <div class="word cn"> {{ item.cn }}</div>
+                    <div class="word cn" > {{ item.cn }}</div>
                     <div class="operation" @click.prevent.stop>
                         <div class="add" @click.stop="changeWeight(item, true)">+</div>
                         <div class="sub" @click.stop="changeWeight(item, false)">-</div>                

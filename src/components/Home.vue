@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 18:09:17
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-09 00:16:21
- * @FilePath: \custom_nodes\comfyui-sixgod_prompt\src\components\Home.vue
+ * @LastEditTime: 2025-03-09 13:47:47
+ * @FilePath: \comfyui-sixgod_prompt\src\components\Home.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -16,7 +16,7 @@
         <PromptTextArea></PromptTextArea>
       </div>
       <div class="area-right">
-        <div>当前版本v2.0.4</div>
+        <div>当前版本v2.0.5</div>
         <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
       </div>
     </div>

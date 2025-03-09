@@ -6,7 +6,7 @@
             <div class="bounce2"></div>
             <div class="bounce3"></div>
         </div>
-        <input  @keyup.enter.prevent="imageinePrompt" v-model="imagineWord" type="text" placeholder="请输入联想关键词，先要配置大模型" />
+        <input  @keyup.enter.prevent="imageinePrompt" v-model="imagineWord" type="text" placeholder="请输入联想关键词（需要配置大模型），不输入时则调本地词库" />
         <input v-model="startPrompt" type="text" placeholder="开始占位符" />
         <input v-model="endPrompt" type="text" placeholder="结束占位符" />
     </div>
@@ -66,14 +66,15 @@ async function llmImagine(imaginetext) {
 function normalImagine() {
     let randomIndex = Math.floor(Math.random() * imagineJsonData.length);
     let random_cn = imagineJsonData[randomIndex].key
-    // let random_en = imagineJsonData[randomIndex].val
     let prompt_cn = startPrompt.value + random_cn + endPrompt.value
+
+    // let random_en = imagineJsonData[randomIndex].val
     // let prompt_en = startPrompt.value + random_en + endPrompt.value
 
     let sendPrompt = {
         "active": true,
         "state": "enable",
-        "cn": prompt_cn,
+        "cn": `【${prompt_cn}】`,
         "en": prompt_cn,
         "w": 1 
     }
