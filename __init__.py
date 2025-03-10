@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-03-09 14:33:52
-FilePath: \comfyui-sixgod_prompt\__init__.py
+LastEditTime: 2025-03-09 23:26:26
+FilePath: \ComfyUI_windows_portable\ComfyUI\custom_nodes\comfyui-sixgod_prompt\__init__.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -19,14 +19,16 @@ import json
 import requests
 import re
 import random
+from PIL import Image
+
  
  
 try:
-    from transerver import translatorFactory,llm
+    from transerver import translatorFactory,llm,imgtotext
 except:
     transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
     sys.path.append(transerver_path)
-    import translatorFactory,llm
+    import translatorFactory,llm,imgtotext
 
  
 
@@ -125,21 +127,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 
-# def translate(text):
-#     if(transObj['enable']==False):
-#          return text
-#     if(transObj['server']=='free'):
-#          trans_server=freebd.FreeBDTranslator()
-#          return Translator.translate_text(trans_server,text)
-#     elif(transObj['server']=='llm'):
-#          trans_server=llmTranslate.LLMTranslator()
-#          return Translator.translate_text(trans_server,text,transObj)
-#     elif(transObj['server']=='baidu'):
-#          trans_server=baidu.BaiduTranslator()
-#          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
-  
-     
-
+ 
 
 def LoadTagsFile():    
       dic={}
@@ -237,6 +225,38 @@ async def tanslatePrompt(request):
         print(post)
         res=auto_translate(post['text'])
         return web.json_response(res, content_type='application/json')
+
+
+import base64
+from io import BytesIO
+from PIL import Image
+import matplotlib.pyplot as plt
+@server.PromptServer.instance.routes.post("/api/sixgod/img2txt")
+async def img2txt(request):
+    img= await getImage(request)
+    prompt = "<MORE_DETAILED_CAPTION>"
+    # instance= imgtotext.ImageToText("microsoft/Florence-2-base", precision='bf16')
+    instance= imgtotext.ImageToText("gokaygokay/Florence-2-SD3-Captioner", precision='bf16')
+    print('开始反推')
+    resObj=instance.run(prompt,img)
+    en=resObj[prompt]
+    print('反推prompt:'+en)
+    cn=translate(en,"en","zh")
+    res={'en':en,'cn':cn}
+    return web.json_response(res, content_type='application/json')
+
+
+  
+import io
+async def getImage(request):
+    reader=await request.multipart()
+    field=await reader.next()
+    image_data = await field.read(decode=False)
+    image = Image.open(io.BytesIO(image_data))
+    return image
+    # image.show()
+        
+  
 
     
  

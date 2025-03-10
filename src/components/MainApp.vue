@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-09 00:06:31
- * @FilePath: \custom_nodes\comfyui-sixgod_prompt\src\components\MainApp.vue
+ * @LastEditTime: 2025-03-10 16:05:54
+ * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
@@ -14,14 +14,21 @@
         <div class="mainApp" v-show="openWindow" :data-them="currentThem" ref="refMainApp">
             <div class="sixgod-container">
                 <div class="main-head">
-                    <div>
+                    <div class="head-left">
                         <!-- <button class="btn">同步数据</button>
                         <button class="btn">设置</button> -->
-                        <Settings></Settings>
+                        <div>
+                            <Settings v-model="isshowSettings"></Settings>
+                            <button class="btn" @click="isshowSettings = !isshowSettings">设置</button>
+                            <button class="btn" @click="clearCache">清理提示词缓存</button>
+                            <button class="btn" @click="clearAllCache">清理提示词缓存(所有)</button>
+                        </div>
+
                     </div>
-                    <div><span @click="changThem(item)" class="color" v-for="item, index in themCssArr" :key="index"
-                            :style="{ background: item.bgcolor }"></span></div>
-                    <div class="onoff" @click="closeUI">X</div>
+                    <div class="head-center"><span @click="changThem(item)" class="color-dot"
+                            v-for="item, index in themCssArr" :key="index" :style="{ background: item.bgcolor }"></span>
+                    </div>
+                    <div class="head-right onoff" @click="closeUI">X</div>
                 </div>
                 <Home v-if="isDataReady"></Home>
             </div>
@@ -45,6 +52,7 @@ let themCssArr = [
     { cssThem: 'yellow', bgcolor: '#FF9800' },
 ]
 let openWindow = ref(false);
+let isshowSettings = ref(false);
 let isDataReady = ref(false);
 const currentTextareaDom = ref(null);
 const textareaPromptsList = ref([]);
@@ -218,7 +226,7 @@ function loadJsonFile() {
         const module = importJsonFiles[path]; // 如果使用 eager，这里已经是解析后的模块
         const fileName = path.match(/[^/]+(?=\.json$)/)[0]; // 提取 .json 前的部分
         jsonData[fileName] = module.default;
-       
+
     }
 
     isDataReady.value = true;
@@ -367,7 +375,7 @@ function initShortCut(event) {
 function addBorder(textarea) {
     if (configs.isshowBorder)
         textarea.style.border = `${configs.borderWidth}px solid ${configs.borderColor}`;
- 
+
 
 }
 
@@ -375,12 +383,23 @@ function loadConfigsHandle() {
     if (localStorage.getItem('transObj')) {
         let localConfig = JSON.parse(localStorage.getItem('transObj'))
         configs = { ...configs, ...localConfig }
-         
+
     }
     document.addEventListener('keydown', function (event) {
         initShortCut(event);
     })
 }
+
+function clearCache() {
+    textareaPromptsList.value = textareaPromptsList.value.filter(item => item.id !== currentId.value);
+    saveAllPromptsData();
+}
+
+function clearAllCache() {
+    localStorage.removeItem('six-promptsData')
+
+}
+
 
 onMounted(() => {
     currentThem.value = window.localStorage.getItem('currentThem') || 'default'
@@ -403,6 +422,7 @@ onMounted(() => {
         textareaPromptsList.value.find(item => item.id == currentId.value).promptInfo = [];
     })
 
+
 })
 </script>
 
@@ -412,15 +432,27 @@ onMounted(() => {
     padding: 15px;
     display: flex;
     justify-content: space-between;
+    position: relative;
+
 }
 
-.color {
+ 
+.head-center {
+    position: absolute; 
+    left: 50%;
+    transform: translateX(-50%); 
+}
+
+ 
+
+.color-dot {
     width: 30px;
     height: 30px;
     display: inline-block;
     border-radius: 50%;
     cursor: pointer;
     margin: 0 3px;
+
 }
 
 .onoff {

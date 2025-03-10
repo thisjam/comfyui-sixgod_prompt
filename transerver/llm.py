@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-23 22:30:05
 LastEditors: Six_God_K
-LastEditTime: 2025-03-08 22:25:03
-FilePath: \custom_nodes\comfyui-sixgod_prompt\transerver\llm.py
+LastEditTime: 2025-03-09 19:26:52
+FilePath: \comfyui-sixgod_prompt\transerver\llm.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -39,14 +39,7 @@ Copyright (c) 2024 by ${git_name_email}, All Rights Reserved.
 #             return question
 
 
-# if __name__ == '__main__':
-#     question='一个女孩'
-#     modelName="qwen/qwen1_5-4b-chat-q5_k_m"
-#     Preset=f'你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，自定义风格，尽量详细，用中文回复'
-#     res= chat(question,modelName,Preset)
-#     print(res)
-
-
+ 
  
 import time
 import os

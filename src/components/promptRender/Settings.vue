@@ -1,6 +1,6 @@
 <template>
     <div class="sixgod-settings">
-        <button class="btn" @click="isshow = !isshow">设置</button>
+   
         <Dialog v-model="isshow">
             <template v-slot:head>
                 <div>配置</div>
@@ -129,7 +129,7 @@ import Tabs from './Tabs.vue';
 import eventBus from '../../utils/eventBus.js'
 
 
-const isshow = ref(false)
+const isshow = defineModel(false)
 const activeIndex = ref(0)
 const txt_test_trans = ref('')
 

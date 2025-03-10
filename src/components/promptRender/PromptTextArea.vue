@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:29:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-09 13:40:04
+ * @LastEditTime: 2025-03-10 14:41:28
  * @FilePath: \comfyui-sixgod_prompt\src\components\promptRender\PromptTextArea.vue
  * @Description: 
  * 
@@ -199,6 +199,9 @@ watch(
 onMounted(() => {
     eventBus.on('InputPrompt', (data) => {
         InputPromptHandle(data);
+    })
+    eventBus.on('sendPrePrompt', (text) => {
+        textareaPreValue.value = text
     })
     eventBus.on("deleteAllPrompt", () => {
         deleteAllPromptHandle()
