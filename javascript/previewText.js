@@ -2,8 +2,8 @@
  * @Author: Six_God_K
  * @Date: 2024-09-03 14:00:06
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-08 00:24:31
- * @FilePath: \custom_nodes\comfyui-sixgod_prompt\javascript\previewText.js
+ * @LastEditTime: 2025-03-11 22:57:37
+ * @FilePath: \comfyui-sixgod_prompt\javascript\previewText.js
  * @Description:
  *
  * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved.
@@ -12,6 +12,7 @@
 import { app } from "../../../scripts/app.js";
 import { ComfyWidgets } from "../../../scripts/widgets.js";
 import { addStylesheet } from "../../scripts/utils.js";
+// import { api } from "../../scripts/api.js";
 
 // Displays input text on a node
 app.registerExtension({
@@ -24,10 +25,14 @@ app.registerExtension({
     if (!widget || !widget.element) {
       return;
     }
+   
     setTimeout(() => {
-      widget.element.dataset.focusId = ComfyNode.id;
-      // console.log(widget.element.dataset.focusId);   
-    }, 10);
+      if (!ComfyNode.flags.id) {
+        let uuid = getuuid();
+        ComfyNode.flags = { id: uuid };
+      }
+      widget.element.dataset.focusId = ComfyNode.flags.id;
+    }, 50);
   },
   //   async loadedGraphNode(ComfyNode, ComfyApp) {
   //     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
@@ -39,12 +44,10 @@ app.registerExtension({
   //     }
   //     widget.element.dataset.focusId = ComfyNode.id;
   //   },
-  init(){
+  init() {
     addStylesheet("sixgod.css", import.meta.url);
   },
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
-
-
     if (nodeData.name === "SixGodPrompts_PreivewText") {
       function populate(text) {
         if (this.widgets) {
@@ -103,3 +106,46 @@ app.registerExtension({
     }
   },
 });
+
+function getuuid(length = 32, useHyphens = true) {
+  // 检查长度是否合法
+  if (length < 1 || length > 128) {
+    throw new Error("Length must be between 1 and 128.");
+  }
+
+  const segments = [];
+  let currentLength = 0;
+
+  // 定义每个段的默认长度（如果启用连字符）
+  const segmentLengths = [8, 4, 4, 4, 12]; // 标准 UUID 的分段长度
+
+  if (useHyphens) {
+    // 如果启用连字符，按标准分段生成
+    for (let i = 0; i < segmentLengths.length && currentLength < length; i++) {
+      const segmentLen = Math.min(segmentLengths[i], length - currentLength);
+      const segment = Array.from({ length: segmentLen }, () =>
+        Math.floor(Math.random() * 16).toString(16)
+      ).join("");
+      segments.push(segment);
+      currentLength += segmentLen;
+    }
+  } else {
+    // 如果不启用连字符，直接生成指定长度的字符串
+    segments.push(
+      Array.from({ length }, () =>
+        Math.floor(Math.random() * 16).toString(16)
+      ).join("")
+    );
+  }
+
+  // 如果总长度不足，补充剩余部分
+  if (currentLength < length) {
+    const remaining = Array.from({ length: length - currentLength }, () =>
+      Math.floor(Math.random() * 16).toString(16)
+    ).join("");
+    segments.push(remaining);
+  }
+
+  // 返回结果
+  return segments.join(useHyphens ? "-" : "");
+}

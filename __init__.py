@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-08 09:37:03
 LastEditors: Six_God_K
-LastEditTime: 2025-03-09 23:26:26
+LastEditTime: 2025-03-11 23:13:27
 FilePath: \ComfyUI_windows_portable\ComfyUI\custom_nodes\comfyui-sixgod_prompt\__init__.py
 Description: 
 
@@ -20,6 +20,7 @@ import requests
 import re
 import random
 from PIL import Image
+import uuid
 
  
  
@@ -47,14 +48,17 @@ class SixGodPrompts:
     def __init__(self):
         pass  
     @classmethod
-    def INPUT_TYPES(s):  
-       
-        return {"required": {
-            "text": ("STRING", {"multiline": True,"placeholder": "双击（可配置三击）打开页面"}),
-            "clip": ("CLIP",),
-            "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),   
-        }}
-    
+    def INPUT_TYPES(s):     
+       return {
+            "required": {
+                "text": ("STRING", {"multiline": True,"placeholder": "双击（可配置三击）打开页面"}),
+                "clip": ("CLIP",),
+                "seed": ("INT", {"default": 0, "min": 0, "max":sys.maxsize}),   
+              
+            },
+
+        }
+
     RETURN_TYPES = ("CONDITIONING","STRING","INT")
     FUNCTION = "encode"
     CATEGORY = "conditioning"
@@ -232,7 +236,7 @@ from io import BytesIO
 from PIL import Image
 import matplotlib.pyplot as plt
 @server.PromptServer.instance.routes.post("/api/sixgod/img2txt")
-async def img2txt(request):
+async def img2txt(request):   
     img= await getImage(request)
     prompt = "<MORE_DETAILED_CAPTION>"
     # instance= imgtotext.ImageToText("microsoft/Florence-2-base", precision='bf16')

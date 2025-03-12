@@ -58,6 +58,7 @@ const handleDrop = (event) => {
 // 处理粘贴事件
 const handlePaste = (event) => {
     const items = (event.clipboardData || window.clipboardData).items;
+    event.stopPropagation();
     for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
             const blob = items[i].getAsFile();

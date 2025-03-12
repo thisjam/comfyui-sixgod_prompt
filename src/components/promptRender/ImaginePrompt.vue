@@ -51,7 +51,7 @@ async function llmImagine(imaginetext) {
     })
 
     let resjoson = await res.json()
-
+    resjoson= startPrompt.value + resjoson + endPrompt.value
     let sendPrompt = {
         "active": true,
         "state": "enable",

@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-10 16:05:54
+ * @LastEditTime: 2025-03-12 11:40:48
  * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
@@ -126,15 +126,19 @@ function addDbClickkHandler(textarea) {
 }
 
 function bindFocusBlurEvents(textarea) {
-
+    let isOtherNode = false;
     if (!textarea.dataset.focusId) {
+        //第三方
         let uid = getuuid();
         textarea.dataset.focusId = uid;
+        isOtherNode = true;
     }
     currentId.value = textarea.dataset.focusId;
     if (!textareaPromptsList.value.find(item => item.id == currentId.value)) {
+        //第一次绑定
         textareaPromptsList.value.push({
             id: currentId.value,
+            isOtherNode: isOtherNode,
             promptInfo: textarea.value ? [{
                 "active": true,
                 "state": "enable",
@@ -392,6 +396,8 @@ function loadConfigsHandle() {
 
 function clearCache() {
     textareaPromptsList.value = textareaPromptsList.value.filter(item => item.id !== currentId.value);
+    //不是第三方
+    // textareaPromptsList.value = textareaPromptsList.value.filter(item => item.isOtherNode === false); 
     saveAllPromptsData();
 }
 
@@ -424,6 +430,7 @@ onMounted(() => {
 
 
 })
+
 </script>
 
 <style lang="scss" scoped>
@@ -436,14 +443,14 @@ onMounted(() => {
 
 }
 
- 
+
 .head-center {
-    position: absolute; 
+    position: absolute;
     left: 50%;
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
 }
 
- 
+
 
 .color-dot {
     width: 30px;

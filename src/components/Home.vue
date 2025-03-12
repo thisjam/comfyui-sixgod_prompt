@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 18:09:17
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-10 15:35:57
+ * @LastEditTime: 2025-03-12 12:16:55
  * @FilePath: \comfyui-sixgod_prompt\src\components\Home.vue
  * @Description: 
  * 
@@ -19,7 +19,7 @@
        
       </div>
       <div class="area-right">
-        <div>当前版本v2.1.0</div>
+        <div>当前版本v2.1.1</div>
         <div>
           <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
         </div>
