@@ -233,5 +233,6 @@ const clearCachedFile = () => {
     width: 36px;
     height: 36px;
     z-index: 10;
+    color: #a75151;
 }
 </style>

@@ -1,31 +1,37 @@
 /*
  * @Author: Six_God_K
- * @Date: 2024-09-03 14:00:06
+ * @Date: 2025-03-03 21:41:18
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-11 22:57:37
+ * @LastEditTime: 2025-03-14 20:55:20
  * @FilePath: \comfyui-sixgod_prompt\javascript\previewText.js
- * @Description:
- *
- * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved.
+ * @Description: 
+ * 
+ * Copyright (c) 2025 by ${git_name_email}, All Rights Reserved. 
  */
+ 
 
 import { app } from "../../../scripts/app.js";
 import { ComfyWidgets } from "../../../scripts/widgets.js";
 import { addStylesheet } from "../../scripts/utils.js";
 // import { api } from "../../scripts/api.js";
-
-// Displays input text on a node
+ 
 app.registerExtension({
   name: "sixgod_prompts",
+  async setup() {
+   
+  },
+
   async nodeCreated(ComfyNode, ComfyApp) {
-    if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
+ 
+    if (!ComfyNode || !ComfyNode.title?.includes("六神")) {
       return;
     }
     const widget = ComfyNode.widgets?.[0];
     if (!widget || !widget.element) {
       return;
     }
-   
+  
+  
     setTimeout(() => {
       if (!ComfyNode.flags.id) {
         let uuid = getuuid();
@@ -34,16 +40,9 @@ app.registerExtension({
       widget.element.dataset.focusId = ComfyNode.flags.id;
     }, 50);
   },
-  //   async loadedGraphNode(ComfyNode, ComfyApp) {
-  //     if (!ComfyNode || !ComfyNode.title?.includes("SixGod")) {
-  //       return;
-  //     }
-  //     const widget = ComfyNode.widgets?.[0];
-  //     if (!widget || !widget.element) {
-  //       return;
-  //     }
-  //     widget.element.dataset.focusId = ComfyNode.id;
-  //   },
+    // async loadedGraphNode(ComfyNode, ComfyApp) {
+ 
+    // },
   init() {
     addStylesheet("sixgod.css", import.meta.url);
   },

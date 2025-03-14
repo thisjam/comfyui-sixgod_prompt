@@ -72,7 +72,7 @@ const isOpenCustomRondomPrompt = ref(false);
 
 
 function moveToContainer() {
-    let parentContainer = document.querySelector('.prompt-container');
+    let parentContainer = document.querySelector('.float-left');
     if (refNavMenu.value && parentContainer) {
         parentContainer.appendChild(refNavMenu.value);
 
@@ -261,13 +261,11 @@ onMounted(() => {
 
 .prompt-list {
     display: grid;
+    justify-content: space-between;
     grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-    gap: 15px;
     grid-auto-rows: minmax(200px, auto);
+    gap: 15px;
     box-sizing: border-box;
-    padding: 0 1em;
-
-
 }
 
 .prompt-btn-container {

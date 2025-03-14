@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:29:19
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-10 14:41:28
+ * @LastEditTime: 2025-03-14 22:07:08
  * @FilePath: \comfyui-sixgod_prompt\src\components\promptRender\PromptTextArea.vue
  * @Description: 
  * 
@@ -17,13 +17,20 @@
         {{ textareaPromptsData }}
 
 
-        <DraggableList style="margin-bottom: 20px;" v-model:promptlist="promptInfoArr" v-model:textareaDom="Reftextarea"></DraggableList>
+        <DraggableList style="margin-bottom: 20px;" v-model:promptlist="promptInfoArr"
+            v-model:textareaDom="Reftextarea"></DraggableList>
         <div v-show="textareaPreValue" class="preivew-translate">
             {{ textareaPreValue }}
         </div>
-        <button @click="textareaPreValue = ''">清空预览框</button>
-        <button @click="translateAll">一键预览翻译</button>
-        
+        <div style="display: flex;align-items: center;"> 
+            <button @click="textareaPreValue = ''">清空预览框</button>
+            <button @click="translateAll">一键预览翻译</button>
+             <Loading v-model="isshowLoading"></Loading>       
+        </div>
+
+       
+
+
     </div>
 
 </template>
@@ -32,10 +39,12 @@
 import { nextTick, inject, onMounted, ref, watch } from 'vue'
 import eventBus from '../../utils/eventBus';
 import DraggableList from './DraggableList.vue';
+import Loading from './Loading.vue';
 
 const textareaPromptsData = ref('')
 
 const isComposing = ref(false);
+const isshowLoading = ref(false);
 let textareaValue = ref('')
 let textareaPreValue = ref('')
 let separator = ref('\u200B')
@@ -163,8 +172,17 @@ async function translate(text) {
 }
 async function translateAll() {
     if (!textareaValue.value) return
-    let res = await translate(textareaValue.value)
-    textareaPreValue.value = res[1]
+    try {
+        isshowLoading.value = true;
+        let res = await translate(textareaValue.value.replace(/\n/g, ''));
+        textareaPreValue.value = res[1]
+        isshowLoading.value = false;
+    }
+    catch (error) {
+        isshowLoading.value = false;
+        console.error('翻译失败:', error);
+    }
+
 
 }
 async function InputPromptHandle(data) {
@@ -211,7 +229,7 @@ onMounted(() => {
     })
     eventBus.on("loadTextareaData", (data) => {
         promptInfoArr.value = data.promptInfo
-        textareaPreValue.value=''
+        textareaPreValue.value = ''
 
 
     })
@@ -245,7 +263,7 @@ textarea:focus {
     margin: .5em 0;
 }
 
-.preivew-translate{
+.preivew-translate {
     background: var(--textarea-prompt-bg-color);
     border-radius: 5px;
     border: 1px solid var(--textarea-prompt-border-color);
@@ -253,6 +271,4 @@ textarea:focus {
     margin-bottom: 20px;
     min-height: 2em;
 }
-
- 
 </style>

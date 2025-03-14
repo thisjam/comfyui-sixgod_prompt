@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-12 11:40:48
+ * @LastEditTime: 2025-03-14 17:50:11
  * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
@@ -442,6 +442,8 @@ onMounted(() => {
     position: relative;
 
 }
+ 
+
 
 
 .head-center {

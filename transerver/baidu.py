@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-13 12:54:31
 LastEditors: Six_God_K
-LastEditTime: 2025-03-08 21:18:24
-FilePath: \custom_nodes\comfyui-sixgod_prompt\transerver\baidu.py
+LastEditTime: 2025-03-14 22:32:37
+FilePath: \ComfyUI_windows_portable\ComfyUI\custom_nodes\comfyui-sixgod_prompt\transerver\baidu.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -27,7 +27,7 @@ class BaiduTranslator(Translator.TranslatorInterface):
             "to": kwargs.get("lang_to","en"),
             "q": text,
             "salt": "1435660288",# 随机数
-            "sign":self.encrypt_string_to_md5(kwargs['appid']+text+"1435660288"+kwargs['secretKey'])
+            "sign":self.encrypt_string_to_md5(kwargs['appid']+text+"1435660288"+kwargs['secret'])
             }
       
         try:    
@@ -51,8 +51,6 @@ class BaiduTranslator(Translator.TranslatorInterface):
 
 
 # if __name__ == '__main__':
-#     appid='202406401002012191'
-#     secretKey='qKvBIOYoQsiqSm9RjlcGU'
 #     text="红色的气球"
 #     baidu_translator = BaiduTranslator()
 #     res = Translator.translate_text(baidu_translator, appid,secretKey,text)
