@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 19:36:34
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-14 17:50:11
+ * @LastEditTime: 2025-03-15 10:08:42
  * @FilePath: \comfyui-sixgod_prompt\src\components\MainApp.vue
  * @Description: 
  * 
@@ -416,9 +416,13 @@ onMounted(() => {
     loadRemoteJsonFile();
     // loadJsonFile();
     eventBus.on('updatePrompt', (data) => {
-        if (currentTextareaDom.value) {
-            currentTextareaDom.value.value = data.txt;
-
+        if (currentTextareaDom.value) {   
+            currentTextareaDom.value.value = data.txt;  
+            if(data.isGenerate)
+            {
+               let btn= document.querySelector(".queue-button-group button")
+               btn?.click();
+            }
             textareaPromptsList.value.find(item => item.id == currentId.value).promptInfo = data.promptInfo;
             saveAllPromptsData();
         }

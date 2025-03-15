@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 18:09:17
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-14 22:44:34
+ * @LastEditTime: 2025-03-15 10:21:26
  * @FilePath: \comfyui-sixgod_prompt\src\components\Home.vue
  * @Description: 
  * 
@@ -25,7 +25,7 @@
 
     <div class="float-right">
       <div class="version-info">
-        <div>当前版本v2.1.2</div>
+        <div>当前版本v2.1.3</div>
         <div>
           <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
         </div>
@@ -83,8 +83,7 @@ import eventBus from '../utils/eventBus';
 import { register } from '@/utils/load';
  
 
-const progressMaxValue = ref(0); // 最大值
-const currentProgress = ref(0); // 初始进度值
+ 
 const progressData = ref(
   {
     max: 0,
@@ -115,8 +114,8 @@ function progress(data) {
 }
 
 function generateImg() {
-  let btn = document.querySelector(".queue-button-group button");
-  btn.click();
+  progressData.value.max = 1;
+  eventBus.emit('closeUI',true);
 }
 onMounted(() => {
 
