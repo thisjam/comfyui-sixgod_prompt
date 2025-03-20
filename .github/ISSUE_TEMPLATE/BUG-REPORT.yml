@@ -1,0 +1,103 @@
+name: "🐛 Bug Report【BUG提交】"
+description: Create a new ticket for a bug.
+title: "🐛 [BUG] - <title>"
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 严重程度
+      description: 选择问题的影响级别
+      options:
+        - "请选择"
+        - "高 - 导致程序崩溃"
+        - "中 - 功能不可用"
+        - "低 - 轻微问题"
+    validations:
+      required: true  # 强制必选
+  - type: dropdown
+    id: comfyvesion
+    attributes:
+      label: "comyui版本"
+      description: 选择你用的comyui版本?
+      multiple: false
+      options:
+        - "请选择"
+        - 官方版
+        - 秋叶版
+        - 里布版
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: pythonversion
+    attributes:
+      label: "python和torch版本"
+      description: 请输入你使用的python和torch版本 ?
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: "Browsers【浏览器】"
+      description: What browsers are you seeing the problem on ?
+      multiple: false
+      options:
+        - "请选择"
+        - Chrome
+        - Microsoft Edge
+        - Safari
+        - Firefox
+        - Opera
+        - 360安全浏览器
+        - 其他
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: "OS【系统】"
+      description: What is the impacted environment ?
+      multiple: false
+      options:
+        - "请选择"
+        - Windows
+        - Linux
+        - Mac
+    validations:
+      required: true
+  - type: textarea
+    id: reprod
+    attributes:
+      label: "Reproduction steps【BUG复现步骤】"
+      description: 简洁清晰描述你做了哪些步骤后导致出现BUG
+      placeholder: | #保留换行
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Screenshots【截图】"
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs【报错日志】"
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: bash
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: Please enter an explicit description of your issue
+      placeholder: Short and explicit description of your incident...
+    validations:
+      required: false

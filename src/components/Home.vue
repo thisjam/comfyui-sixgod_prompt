@@ -2,7 +2,7 @@
  * @Author: Six_God_K
  * @Date: 2025-02-22 18:09:17
  * @LastEditors: Six_God_K
- * @LastEditTime: 2025-03-15 10:21:26
+ * @LastEditTime: 2025-03-20 15:01:59
  * @FilePath: \comfyui-sixgod_prompt\src\components\Home.vue
  * @Description: 
  * 
@@ -25,13 +25,13 @@
 
     <div class="float-right">
       <div class="version-info">
-        <div>当前版本v2.1.3</div>
+        <div>当前版本v2.1.4</div>
         <div>
           <a target="_blank" href="https://github.com/thisjam/comfyui-sixgod_prompt">👉点击查看插件如何使用</a>
         </div>
         <div style="position: relative;">
           <a href="javascript:void(0)" @click="showWx = !showWx">👉技术、商业合作、技术交流群</a>
-          <div v-show="showWx" class="wx"> <img src="@/assets/imgs/wx.jpg" alt=""></div>
+          <div v-show="showWx" class="wx"> <img src="@/assets/imgs/wx.png" alt=""></div>
         </div>
       </div>
       <div class="generate-btn">

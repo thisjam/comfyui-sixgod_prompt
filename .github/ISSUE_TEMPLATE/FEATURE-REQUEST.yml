@@ -1,0 +1,13 @@
+name: "💡 Feature Request【新功能请求】"
+description: 创建一个新功能请求描述
+title: "💡 [REQUEST] - <title>"
+labels: ["question"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description【描述】"
+      description: 简洁详细的描述想你想需要的功能
+      placeholder: Short and explicit description of your incident...
+    validations:
+      required: false
